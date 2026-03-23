@@ -293,7 +293,7 @@ service cloud.firestore {
                             className="adm-date-time"
                           />
                           <input
-                            type="url"
+                            type="text"
                             value={d.referral}
                             onChange={(e) => updateDate(i, 'referral', e.target.value)}
                             placeholder="https://biglietteria.it/evento"

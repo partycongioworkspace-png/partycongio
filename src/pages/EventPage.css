@@ -232,10 +232,21 @@
   color: #0f1014;
   font-weight: 700;
 }
-.ep-date-info p {
+.ep-date-info p,
+.ep-date-time {
   font-size: 0.85rem;
   color: #5a5f7a;
   margin: 0.15rem 0 0;
+}
+
+/* ── Date actions (ticket + wa) ── */
+.ep-date-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  flex-shrink: 0;
+  align-items: stretch;
+  min-width: 0;
 }
 
 /* ── CTA buttons ── */
@@ -256,10 +267,32 @@
 }
 .ep-cta:hover { opacity: 0.85; transform: translateY(-1px); }
 
+/* Primary: ticket link */
+.ep-cta-ticket {
+  background: linear-gradient(135deg, #8b5cf6, #d946ef);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(139,92,246,0.3);
+}
+
 .ep-cta-wa {
   background: #25d366;
   color: #fff;
 }
+
+/* Secondary style when ticket CTA already present */
+.ep-cta-secondary {
+  background: rgba(37,211,102,0.1);
+  color: #1a9e4e;
+  border: 1.5px solid rgba(37,211,102,0.3);
+  font-size: 0.8rem;
+  padding: 0.45rem 0.9rem;
+  box-shadow: none;
+}
+.ep-cta-secondary:hover {
+  background: rgba(37,211,102,0.18);
+  opacity: 1;
+}
+
 .ep-cta-ig {
   background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
   color: #fff;
@@ -340,7 +373,11 @@
     flex-direction: column;
     align-items: flex-start;
   }
-  .ep-cta {
+  .ep-date-actions {
+    width: 100%;
+  }
+  .ep-cta,
+  .ep-cta-secondary {
     width: 100%;
   }
 }

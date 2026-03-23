@@ -64,7 +64,12 @@ function EventPage() {
     )
   }
 
-  const dates = Array.isArray(event.dates) ? event.dates : []
+  // Support both new (dates array) and legacy (top-level date/referral) structure
+  const dates = Array.isArray(event.dates) && event.dates.length > 0
+    ? event.dates
+    : event.date
+      ? [{ date: event.date, time: event.time || '', referral: event.referral || '' }]
+      : []
   const badge = BADGE_COLORS[event.badge]
   const bgGradient = CAT_GRADIENT[event.category] || CAT_GRADIENT.beach
 
@@ -134,7 +139,7 @@ function EventPage() {
               <div className="ep-date-card ep-date-nodate">
                 <p>Date da confermare — contatta Gio per info</p>
                 <a href="https://wa.me/393289466213" target="_blank" rel="noreferrer" className="ep-cta ep-cta-wa">
-                  WhatsApp Gio →
+                  💬 Contatta Gio su WhatsApp →
                 </a>
               </div>
             ) : dates.map((d, i) => (
@@ -143,29 +148,30 @@ function EventPage() {
                   <span className="ep-date-num">{i + 1}</span>
                   <div>
                     <strong>{d.date}</strong>
-                    {d.time && <p>{d.time}</p>}
+                    {d.time && <p className="ep-date-time">{d.time}</p>}
                   </div>
                 </div>
 
-                {d.referral ? (
+                <div className="ep-date-actions">
+                  {d.referral && (
+                    <a
+                      href={buildTrackedLink(d.referral, `${event.id}-${i}`)}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="ep-cta ep-cta-ticket"
+                    >
+                      🎟 Acquista biglietto →
+                    </a>
+                  )}
                   <a
-                    href={buildTrackedLink(d.referral, `${event.id}-${i}`)}
+                    href={`https://wa.me/393289466213?text=Ciao Gio, mi interessa l'evento: ${encodeURIComponent(event.title)}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="ep-cta"
+                    className={`ep-cta ep-cta-wa${d.referral ? ' ep-cta-secondary' : ''}`}
                   >
-                    Prenota biglietto →
+                    💬 {d.referral ? 'Chiedi info' : 'Contatta Gio →'}
                   </a>
-                ) : (
-                  <a
-                    href="https://wa.me/393289466213"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="ep-cta ep-cta-wa"
-                  >
-                    Contatta Gio →
-                  </a>
-                )}
+                </div>
               </div>
             ))}
           </div>
