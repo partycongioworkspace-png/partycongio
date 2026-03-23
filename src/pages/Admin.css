@@ -1,0 +1,623 @@
+/* ── PALETTE ── */
+:root {
+  --adm-bg:       #08060f;
+  --adm-card:     #110d22;
+  --adm-card2:    #180f2e;
+  --adm-border:   rgba(139, 92, 246, 0.18);
+  --adm-violet:   #8b5cf6;
+  --adm-fuchsia:  #d946ef;
+  --adm-fluo:     #a3e635;
+  --adm-white:    #f0ecff;
+  --adm-muted:    #6b638f;
+  --adm-red:      #f87171;
+  --adm-trans:    all 0.2s ease;
+}
+
+.adm-wrap {
+  min-height: 100vh;
+  background: var(--adm-bg);
+  color: var(--adm-white);
+  font-family: Inter, 'Segoe UI', system-ui, sans-serif;
+}
+
+/* ── HEADER ── */
+.adm-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  background: rgba(8,6,15,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--adm-border);
+}
+
+.adm-logo {
+  height: 34px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  filter: brightness(0) invert(1);
+  opacity: 0.9;
+}
+
+.adm-header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.adm-admin-label {
+  font-size: 0.78rem;
+  color: var(--adm-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.adm-logout {
+  background: rgba(248, 113, 113, 0.08);
+  border: 1px solid rgba(248,113,113,0.2);
+  color: var(--adm-red);
+  border-radius: 8px;
+  padding: 0.5rem 1.1rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--adm-trans);
+}
+.adm-logout:hover {
+  background: rgba(248,113,113,0.18);
+}
+
+/* ── TABS ── */
+.adm-tabs {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1.5rem 2rem 0;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.adm-tab {
+  padding: 0.65rem 1.4rem;
+  background: rgba(139,92,246,0.06);
+  border: 1px solid var(--adm-border);
+  border-radius: 12px;
+  color: var(--adm-muted);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: var(--adm-trans);
+}
+.adm-tab:hover {
+  background: rgba(139,92,246,0.12);
+  color: var(--adm-violet);
+  border-color: rgba(139,92,246,0.35);
+}
+.adm-tab.active {
+  background: linear-gradient(135deg, var(--adm-violet), var(--adm-fuchsia));
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(139,92,246,0.35);
+}
+
+/* ── BODY ── */
+.adm-body {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* ── FIRESTORE RULES WARNING ── */
+.adm-rules-warning {
+  background: rgba(248,113,113,0.06);
+  border: 1px solid rgba(248,113,113,0.25);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}
+.adm-rules-warning strong {
+  display: block;
+  color: var(--adm-red);
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+.adm-rules-warning p { color: #ccc; margin-bottom: 0.75rem; }
+.adm-rules-warning a { color: var(--adm-violet); text-decoration: underline; }
+.adm-rules-warning pre {
+  background: rgba(0,0,0,0.4);
+  border-radius: 10px;
+  padding: 1rem;
+  font-size: 0.78rem;
+  color: var(--adm-fluo);
+  overflow-x: auto;
+  white-space: pre;
+  line-height: 1.6;
+}
+
+/* ── ACTIONS ── */
+.adm-actions { margin-bottom: 1.5rem; }
+
+.adm-add-btn {
+  background: linear-gradient(135deg, var(--adm-violet), var(--adm-fuchsia));
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 0.85rem 1.75rem;
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: var(--adm-trans);
+  box-shadow: 0 8px 24px rgba(139,92,246,0.3);
+}
+.adm-add-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(139,92,246,0.4);
+}
+
+/* ── FORM BOX ── */
+.adm-form-box {
+  background: var(--adm-card);
+  border: 1px solid var(--adm-border);
+  border-radius: 20px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+
+.adm-form-box h2 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--adm-white);
+  margin: 0 0 1.5rem;
+}
+
+.adm-form-error {
+  background: rgba(248,113,113,0.1);
+  border: 1px solid rgba(248,113,113,0.3);
+  color: var(--adm-red);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  margin-bottom: 1.25rem;
+  line-height: 1.5;
+}
+
+.adm-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.adm-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.adm-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.adm-field > label {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--adm-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.adm-field input,
+.adm-field select,
+.adm-field textarea {
+  background: rgba(139,92,246,0.06);
+  border: 1px solid var(--adm-border);
+  border-radius: 12px;
+  padding: 0.8rem 1rem;
+  font-size: 0.95rem;
+  color: var(--adm-white);
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.adm-field input::placeholder,
+.adm-field textarea::placeholder {
+  color: rgba(107,99,143,0.6);
+}
+.adm-field input:focus,
+.adm-field select:focus,
+.adm-field textarea:focus {
+  outline: none;
+  border-color: var(--adm-violet);
+  box-shadow: 0 0 0 3px rgba(139,92,246,0.15);
+}
+.adm-field select option {
+  background: #1a1030;
+  color: var(--adm-white);
+}
+
+.adm-checkbox-field > label {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+  color: #bbb;
+  cursor: pointer;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+
+.adm-img-preview {
+  width: 100%;
+  max-width: 280px;
+  height: 170px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid var(--adm-border);
+}
+
+/* ── DATE MULTIPLE ── */
+.adm-dates-section {
+  background: rgba(139,92,246,0.04);
+  border: 1px solid var(--adm-border);
+  border-radius: 16px;
+  padding: 1.25rem;
+}
+
+.adm-dates-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.adm-dates-label {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--adm-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.adm-add-date-btn {
+  background: rgba(217,70,239,0.12);
+  border: 1px solid rgba(217,70,239,0.3);
+  color: var(--adm-fuchsia);
+  border-radius: 8px;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--adm-trans);
+}
+.adm-add-date-btn:hover {
+  background: rgba(217,70,239,0.2);
+}
+
+.adm-date-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.adm-date-row:last-child { margin-bottom: 0; }
+
+.adm-date-num {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--adm-violet), var(--adm-fuchsia));
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.adm-date-fields {
+  display: grid;
+  grid-template-columns: 2fr 1fr 2.5fr;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.adm-date-fields input {
+  background: rgba(139,92,246,0.06);
+  border: 1px solid var(--adm-border);
+  border-radius: 10px;
+  padding: 0.65rem 0.8rem;
+  font-size: 0.88rem;
+  color: var(--adm-white);
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+.adm-date-fields input::placeholder { color: rgba(107,99,143,0.5); }
+.adm-date-fields input:focus {
+  outline: none;
+  border-color: var(--adm-violet);
+}
+
+.adm-remove-date {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(248,113,113,0.1);
+  border: 1px solid rgba(248,113,113,0.25);
+  color: var(--adm-red);
+  font-size: 0.75rem;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  transition: var(--adm-trans);
+}
+.adm-remove-date:hover { background: rgba(248,113,113,0.2); }
+
+/* ── FORM ACTIONS ── */
+.adm-form-actions {
+  display: flex;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+}
+
+.adm-save-btn {
+  background: linear-gradient(135deg, var(--adm-violet), var(--adm-fuchsia));
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 0.85rem 2rem;
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: var(--adm-trans);
+  box-shadow: 0 8px 20px rgba(139,92,246,0.25);
+}
+.adm-save-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.adm-save-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(139,92,246,0.35);
+}
+
+.adm-cancel-btn {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--adm-muted);
+  border-radius: 12px;
+  padding: 0.85rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--adm-trans);
+}
+.adm-cancel-btn:hover {
+  background: rgba(255,255,255,0.1);
+  color: var(--adm-white);
+}
+
+/* ── EVENTS LIST ── */
+.adm-events-list h2,
+.adm-messages h2 {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--adm-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0 0 1.25rem;
+}
+
+.adm-loading,
+.adm-empty {
+  color: var(--adm-muted);
+  font-size: 0.95rem;
+  padding: 2.5rem 0;
+  text-align: center;
+}
+
+.adm-events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.25rem;
+}
+
+.adm-ev-card {
+  background: var(--adm-card);
+  border: 1px solid var(--adm-border);
+  border-radius: 18px;
+  overflow: hidden;
+  transition: var(--adm-trans);
+}
+.adm-ev-card:hover {
+  border-color: rgba(139,92,246,0.4);
+  box-shadow: 0 12px 40px rgba(139,92,246,0.12);
+  transform: translateY(-2px);
+}
+.adm-ev-card.risk {
+  border-color: rgba(217,70,239,0.3);
+}
+
+.adm-ev-img {
+  height: 170px;
+  overflow: hidden;
+}
+.adm-ev-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.adm-ev-body {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.adm-ev-badges {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.adm-badge {
+  display: inline-block;
+  background: rgba(139,92,246,0.15);
+  color: var(--adm-violet);
+  border: 1px solid rgba(139,92,246,0.3);
+  border-radius: 6px;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.adm-badge-cat {
+  background: rgba(163,230,53,0.1);
+  color: var(--adm-fluo);
+  border-color: rgba(163,230,53,0.25);
+}
+.adm-badge-risk {
+  background: rgba(217,70,239,0.12);
+  color: var(--adm-fuchsia);
+  border-color: rgba(217,70,239,0.3);
+}
+
+.adm-ev-body h3 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--adm-white);
+  margin: 0;
+}
+
+/* Date multiple nella card */
+.adm-ev-dates {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.6rem 0.75rem;
+  background: rgba(139,92,246,0.05);
+  border: 1px solid var(--adm-border);
+  border-radius: 10px;
+}
+
+.adm-ev-date-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.83rem;
+  color: rgba(240,236,255,0.7);
+}
+
+.adm-ev-link {
+  font-size: 0.8rem;
+  color: var(--adm-fluo);
+  text-decoration: none;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.adm-ev-link:hover { text-decoration: underline; }
+
+.adm-ev-desc {
+  font-size: 0.85rem;
+  color: var(--adm-muted);
+  line-height: 1.5;
+}
+
+.adm-ev-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.adm-edit-btn,
+.adm-delete-btn {
+  flex: 1;
+  padding: 0.55rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--adm-trans);
+}
+.adm-edit-btn {
+  background: rgba(139,92,246,0.1);
+  color: var(--adm-violet);
+  border: 1px solid rgba(139,92,246,0.2);
+}
+.adm-edit-btn:hover {
+  background: rgba(139,92,246,0.2);
+}
+.adm-delete-btn {
+  background: rgba(248,113,113,0.08);
+  color: var(--adm-red);
+  border: 1px solid rgba(248,113,113,0.2);
+}
+.adm-delete-btn:hover {
+  background: rgba(248,113,113,0.18);
+}
+
+/* ── MESSAGES ── */
+.adm-msg-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.adm-msg-card {
+  background: var(--adm-card);
+  border: 1px solid var(--adm-border);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  transition: var(--adm-trans);
+}
+.adm-msg-card:hover {
+  border-color: rgba(139,92,246,0.35);
+  box-shadow: 0 8px 30px rgba(139,92,246,0.08);
+}
+
+.adm-msg-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.75rem;
+}
+.adm-msg-meta strong {
+  font-size: 1rem;
+  color: var(--adm-white);
+}
+.adm-msg-meta span {
+  font-size: 0.85rem;
+  color: var(--adm-muted);
+}
+.adm-msg-date {
+  margin-left: auto;
+  font-size: 0.76rem !important;
+  color: rgba(107,99,143,0.6) !important;
+}
+
+.adm-msg-body {
+  font-size: 0.92rem;
+  color: rgba(240,236,255,0.65);
+  line-height: 1.65;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 700px) {
+  .adm-header { padding: 1rem 1.25rem; }
+  .adm-body { padding: 1.25rem; }
+  .adm-tabs { padding: 1.25rem 1.25rem 0; flex-wrap: wrap; }
+  .adm-form-row { grid-template-columns: 1fr; }
+  .adm-events-grid { grid-template-columns: 1fr; }
+  .adm-date-fields { grid-template-columns: 1fr 1fr; }
+  .adm-date-link { grid-column: 1 / -1; }
+}

@@ -1,0 +1,346 @@
+.ep-wrap {
+  min-height: 100vh;
+  background: #f7f6ff;
+  font-family: Inter, 'Segoe UI', system-ui, sans-serif;
+}
+
+/* ── Loading / 404 ── */
+.ep-loading {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  background: #f7f6ff;
+  color: #5a5f7a;
+}
+
+.ep-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(139,92,246,0.2);
+  border-top-color: #8b5cf6;
+  border-radius: 50%;
+  animation: ep-spin 0.7s linear infinite;
+}
+@keyframes ep-spin { to { transform: rotate(360deg); } }
+
+.ep-notfound {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  text-align: center;
+  padding: 2rem;
+  background: #f7f6ff;
+}
+.ep-notfound-emoji { font-size: 4rem; margin: 0; }
+.ep-notfound h1 { font-size: 1.8rem; color: #0f1014; margin: 0; }
+.ep-notfound p { color: #5a5f7a; margin: 0; }
+
+/* ── Nav ── */
+.ep-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  background: rgba(247,246,255,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(139,92,246,0.12);
+}
+
+.ep-nav-logo img {
+  height: 52px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.ep-nav-back {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #8b5cf6;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: opacity 0.15s;
+}
+.ep-nav-back:hover { opacity: 0.7; }
+
+/* ── Hero ── */
+.ep-hero {
+  position: relative;
+  height: 360px;
+  overflow: hidden;
+  background: #1e0d36;
+}
+
+.ep-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.ep-hero-placeholder {
+  position: absolute;
+  inset: 0;
+}
+
+.ep-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(15,16,20,0.7) 0%, rgba(15,16,20,0.1) 60%, transparent 100%);
+}
+
+.ep-badge {
+  position: absolute;
+  top: 1.2rem;
+  left: 1.5rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding: 0.35rem 0.9rem;
+  border-radius: 8px;
+  z-index: 2;
+}
+
+.ep-risk-badge {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.5rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  background: rgba(239,68,68,0.9);
+  color: #fff;
+  padding: 0.35rem 0.9rem;
+  border-radius: 8px;
+  z-index: 2;
+}
+
+/* ── Content layout ── */
+.ep-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* ── Main ── */
+.ep-title {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 900;
+  letter-spacing: -0.025em;
+  color: #0f1014;
+  line-height: 1.08;
+  margin: 0 0 1rem;
+}
+
+.ep-desc {
+  font-size: 1.05rem;
+  color: #5a5f7a;
+  line-height: 1.7;
+  margin: 0 0 1.25rem;
+  max-width: 60ch;
+}
+
+.ep-category {
+  font-size: 0.9rem;
+  color: #5a5f7a;
+  margin: 0 0 2rem;
+}
+.ep-category span {
+  font-weight: 700;
+  color: #0f1014;
+}
+
+/* ── Dates ── */
+.ep-dates-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #0f1014;
+  margin: 0 0 1rem;
+}
+
+.ep-dates {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ep-date-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1.25rem;
+  background: #fff;
+  border: 1.5px solid rgba(139,92,246,0.15);
+  border-radius: 16px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.ep-date-card:hover {
+  border-color: rgba(139,92,246,0.4);
+  box-shadow: 0 6px 24px rgba(139,92,246,0.1);
+}
+
+.ep-date-nodate {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+.ep-date-nodate p {
+  color: #5a5f7a;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.ep-date-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.ep-date-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #8b5cf6, #d946ef);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 900;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.ep-date-info strong {
+  display: block;
+  font-size: 1rem;
+  color: #0f1014;
+  font-weight: 700;
+}
+.ep-date-info p {
+  font-size: 0.85rem;
+  color: #5a5f7a;
+  margin: 0.15rem 0 0;
+}
+
+/* ── CTA buttons ── */
+.ep-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 1.3rem;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: opacity 0.15s, transform 0.15s;
+  background: #0f1014;
+  color: #a3e635;
+  flex-shrink: 0;
+}
+.ep-cta:hover { opacity: 0.85; transform: translateY(-1px); }
+
+.ep-cta-wa {
+  background: #25d366;
+  color: #fff;
+}
+.ep-cta-ig {
+  background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  color: #fff;
+}
+.ep-cta-tt {
+  background: #000;
+  color: #fff;
+}
+
+.ep-cta-full {
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+/* ── Aside ── */
+.ep-aside {
+  position: sticky;
+  top: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.ep-aside-card {
+  background: #fff;
+  border: 1.5px solid rgba(139,92,246,0.15);
+  border-radius: 20px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.ep-aside-logo {
+  height: 44px;
+  width: auto;
+  object-fit: contain;
+  margin-bottom: 1rem;
+}
+
+.ep-aside-card h3 {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #0f1014;
+  margin: 0 0 0.4rem;
+}
+.ep-aside-card p {
+  font-size: 0.85rem;
+  color: #5a5f7a;
+  margin: 0 0 1.25rem;
+  line-height: 1.5;
+}
+
+.ep-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #8b5cf6;
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+.ep-back-btn:hover { opacity: 0.7; }
+
+/* ── Responsive ── */
+@media (max-width: 760px) {
+  .ep-content {
+    grid-template-columns: 1fr;
+  }
+  .ep-aside {
+    position: static;
+  }
+  .ep-hero {
+    height: 240px;
+  }
+  .ep-date-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .ep-cta {
+    width: 100%;
+  }
+}
