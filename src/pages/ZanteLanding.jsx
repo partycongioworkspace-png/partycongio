@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
+import { Link } from 'react-router-dom'
 import EventsModal from '../components/EventsModal'
 import { db, cloudinaryUrl } from '../config/firebase'
 import { useEvents } from '../hooks/useEvents'
 import {
   BADGE_SECTIONS,
   benefits,
-  buildTrackedLink,
   faqs,
   partners,
   siteConfig,
@@ -15,20 +15,21 @@ import './ZanteLanding.css'
 
 const EMPTY_CONTACT = { name: '', email: '', phone: '', message: '' }
 
-function EventCard({ ev, variant }) {
+function EventCard({ ev }) {
   const primaryDate = Array.isArray(ev.dates) ? ev.dates[0] : null
-  const isDark = variant === 'dark'
   return (
-    <article className={`ev-card ${isDark ? 'ev-card-dark' : ''}`}>
+    <Link to={`/eventi/${ev.id}`} className="ev-card">
       <div className="ev-thumb">
         {ev.imageId
-          ? <img src={cloudinaryUrl(ev.imageId, 'w_320,h_160,c_fill,q_auto,f_auto')} alt={ev.title} />
-          : <div className={`ev-thumb-gradient ${isDark ? 'ev-thumb-gradient-dark' : ''}`} />
+          ? <img src={cloudinaryUrl(ev.imageId, 'w_400,h_260,c_fill,q_auto,f_auto')} alt={ev.title} />
+          : <div className="ev-thumb-gradient" />
         }
-        <span className={`ev-badge-chip ev-badge-${(ev.badge || '').toLowerCase().replace(/\s+/g, '-')}`}>
-          {ev.badge}
-        </span>
-        {ev.soldOutRisk && <span className="ev-risk-chip">🚨 Quasi esaurito</span>}
+        {ev.badge && (
+          <span className={`ev-badge-chip ev-badge-${(ev.badge || '').toLowerCase().replace(/\s+/g, '-')}`}>
+            {ev.badge}
+          </span>
+        )}
+        {ev.soldOutRisk && <span className="ev-risk-chip">🚨</span>}
       </div>
       <div className="ev-body">
         <strong>{ev.title}</strong>
@@ -36,24 +37,11 @@ function EventCard({ ev, variant }) {
           <p>📅 {primaryDate.date}{primaryDate.time ? ` · ${primaryDate.time}` : ''}</p>
         )}
         {Array.isArray(ev.dates) && ev.dates.length > 1 && (
-          <p className="ev-more-dates">+{ev.dates.length - 1} altra{ev.dates.length > 2 ? 'e' : ''} data</p>
+          <p className="ev-more-dates">+{ev.dates.length - 1} data</p>
         )}
-        {primaryDate?.referral ? (
-          <a
-            href={buildTrackedLink(primaryDate.referral, ev.id)}
-            target="_blank"
-            rel="noreferrer"
-            className={`ev-link ${isDark ? 'ev-link-light' : ''}`}
-          >
-            Prenota ora →
-          </a>
-        ) : (
-          <a href="#contatti" className={`ev-link ${isDark ? 'ev-link-light' : ''}`}>
-            Contatta Gio →
-          </a>
-        )}
+        <span className="ev-link">Scopri →</span>
       </div>
-    </article>
+    </Link>
   )
 }
 
@@ -208,7 +196,7 @@ function ZanteLanding() {
               </button>
             </div>
             <div className="scroll-row">
-              {badgeEvents.map((ev) => <EventCard key={ev.id} ev={ev} variant={dark ? 'dark' : 'light'} />)}
+              {badgeEvents.map((ev) => <EventCard key={ev.id} ev={ev} />)}
             </div>
           </section>
         )
@@ -227,7 +215,7 @@ function ZanteLanding() {
             </button>
           </div>
           <div className="scroll-row">
-            {soldOutEvents.map((ev) => <EventCard key={ev.id} ev={ev} variant="dark" />)}
+            {soldOutEvents.map((ev) => <EventCard key={ev.id} ev={ev} />)}
           </div>
         </section>
       )}

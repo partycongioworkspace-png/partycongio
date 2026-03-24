@@ -1,6 +1,9 @@
+/* ── EVENT PAGE — DARK APP THEME ── */
+
 .ep-wrap {
   min-height: 100vh;
-  background: #f7f6ff;
+  background: #07050f;
+  color: #ffffff;
   font-family: Inter, 'Segoe UI', system-ui, sans-serif;
 }
 
@@ -12,13 +15,11 @@
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  background: #f7f6ff;
-  color: #5a5f7a;
+  background: #07050f;
+  color: rgba(255,255,255,0.5);
 }
-
 .ep-spinner {
-  width: 40px;
-  height: 40px;
+  width: 40px; height: 40px;
   border: 3px solid rgba(139,92,246,0.2);
   border-top-color: #8b5cf6;
   border-radius: 50%;
@@ -35,11 +36,11 @@
   gap: 1rem;
   text-align: center;
   padding: 2rem;
-  background: #f7f6ff;
+  background: #07050f;
 }
 .ep-notfound-emoji { font-size: 4rem; margin: 0; }
-.ep-notfound h1 { font-size: 1.8rem; color: #0f1014; margin: 0; }
-.ep-notfound p { color: #5a5f7a; margin: 0; }
+.ep-notfound h1 { font-size: 1.8rem; color: #fff; margin: 0; }
+.ep-notfound p { color: rgba(255,255,255,0.5); margin: 0; }
 
 /* ── Nav ── */
 .ep-nav {
@@ -49,135 +50,122 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 1.5rem;
-  background: rgba(247,246,255,0.92);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(139,92,246,0.12);
+  padding: 0.7rem 1.5rem;
+  background: rgba(10, 8, 20, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
 }
-
 .ep-nav-logo img {
-  height: 52px;
+  height: 44px;
   width: auto;
   object-fit: contain;
   display: block;
+  filter: brightness(0) invert(1);
+  opacity: 0.88;
 }
-
 .ep-nav-back {
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: #8b5cf6;
   text-decoration: none;
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  transition: opacity 0.15s;
+  transition: color 0.15s;
 }
-.ep-nav-back:hover { opacity: 0.7; }
+.ep-nav-back:hover { color: #a78bfa; }
 
 /* ── Hero ── */
 .ep-hero {
   position: relative;
-  height: 360px;
+  height: 380px;
   overflow: hidden;
   background: #1e0d36;
 }
-
 .ep-hero-img {
-  width: 100%;
-  height: 100%;
+  width: 100%; height: 100%;
   object-fit: cover;
   object-position: center;
   display: block;
 }
-
 .ep-hero-placeholder {
-  position: absolute;
-  inset: 0;
+  width: 100%; height: 100%;
 }
-
 .ep-hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(15,16,20,0.7) 0%, rgba(15,16,20,0.1) 60%, transparent 100%);
+  background: linear-gradient(
+    to bottom,
+    rgba(7,5,15,0.2) 0%,
+    rgba(7,5,15,0.7) 100%
+  );
 }
-
 .ep-badge {
   position: absolute;
-  top: 1.2rem;
-  left: 1.5rem;
-  font-size: 0.78rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  padding: 0.35rem 0.9rem;
+  top: 1.2rem; left: 1.2rem;
+  padding: 0.35rem 0.85rem;
   border-radius: 8px;
-  z-index: 2;
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
-
 .ep-risk-badge {
   position: absolute;
-  top: 1.2rem;
-  right: 1.5rem;
-  font-size: 0.78rem;
-  font-weight: 800;
+  top: 1.2rem; right: 1.2rem;
   background: rgba(239,68,68,0.9);
   color: #fff;
-  padding: 0.35rem 0.9rem;
+  padding: 0.35rem 0.85rem;
   border-radius: 8px;
-  z-index: 2;
+  font-size: 0.72rem;
+  font-weight: 900;
 }
 
 /* ── Content layout ── */
 .ep-content {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 2.5rem;
   max-width: 1100px;
   margin: 0 auto;
   padding: 2.5rem 1.5rem 4rem;
-  display: grid;
-  grid-template-columns: 1fr 340px;
-  gap: 2.5rem;
-  align-items: start;
 }
 
 /* ── Main ── */
-.ep-title {
-  font-size: clamp(1.8rem, 4vw, 3rem);
-  font-weight: 900;
-  letter-spacing: -0.025em;
-  color: #0f1014;
-  line-height: 1.08;
-  margin: 0 0 1rem;
-}
+.ep-main {}
 
+.ep-title {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 900;
+  line-height: 1.12;
+  color: #fff;
+  margin-bottom: 1rem;
+}
 .ep-desc {
-  font-size: 1.05rem;
-  color: #5a5f7a;
+  color: rgba(255,255,255,0.65);
+  font-size: 1rem;
   line-height: 1.7;
-  margin: 0 0 1.25rem;
+  margin-bottom: 1rem;
   max-width: 60ch;
 }
-
 .ep-category {
-  font-size: 0.9rem;
-  color: #5a5f7a;
-  margin: 0 0 2rem;
+  font-size: 0.88rem;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 2rem;
 }
 .ep-category span {
+  color: #a3e635;
   font-weight: 700;
-  color: #0f1014;
 }
 
 /* ── Dates ── */
+.ep-dates { margin-top: 0.5rem; }
 .ep-dates-title {
   font-size: 1.1rem;
   font-weight: 800;
-  color: #0f1014;
-  margin: 0 0 1rem;
-}
-
-.ep-dates {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  color: #fff;
+  margin-bottom: 1rem;
 }
 
 .ep-date-card {
@@ -186,14 +174,15 @@
   justify-content: space-between;
   gap: 1rem;
   padding: 1.1rem 1.25rem;
-  background: #fff;
-  border: 1.5px solid rgba(139,92,246,0.15);
+  background: rgba(255,255,255,0.04);
+  border: 1.5px solid rgba(255,255,255,0.08);
   border-radius: 16px;
+  margin-bottom: 0.75rem;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 .ep-date-card:hover {
   border-color: rgba(139,92,246,0.4);
-  box-shadow: 0 6px 24px rgba(139,92,246,0.1);
+  box-shadow: 0 6px 24px rgba(139,92,246,0.12);
 }
 
 .ep-date-nodate {
@@ -201,21 +190,15 @@
   align-items: flex-start;
   gap: 0.75rem;
 }
-.ep-date-nodate p {
-  color: #5a5f7a;
-  font-size: 0.95rem;
-  margin: 0;
-}
+.ep-date-nodate p { color: rgba(255,255,255,0.5); font-size: 0.95rem; margin: 0; }
 
 .ep-date-info {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
-
 .ep-date-num {
-  width: 32px;
-  height: 32px;
+  width: 32px; height: 32px;
   border-radius: 10px;
   background: linear-gradient(135deg, #8b5cf6, #d946ef);
   color: #fff;
@@ -225,89 +208,75 @@
   place-items: center;
   flex-shrink: 0;
 }
-
 .ep-date-info strong {
   display: block;
   font-size: 1rem;
-  color: #0f1014;
+  color: #fff;
   font-weight: 700;
 }
 .ep-date-info p,
 .ep-date-time {
   font-size: 0.85rem;
-  color: #5a5f7a;
+  color: rgba(255,255,255,0.5);
   margin: 0.15rem 0 0;
 }
 
-/* ── Date actions (ticket + wa) ── */
+/* ── Date action buttons ── */
 .ep-date-actions {
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
+  gap: 0.4rem;
   flex-shrink: 0;
   align-items: stretch;
-  min-width: 0;
 }
 
-/* ── CTA buttons ── */
 .ep-cta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.65rem 1.3rem;
+  padding: 0.65rem 1.2rem;
   border-radius: 12px;
   font-size: 0.88rem;
   font-weight: 800;
   text-decoration: none;
   white-space: nowrap;
   transition: opacity 0.15s, transform 0.15s;
-  background: #0f1014;
-  color: #a3e635;
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.1);
   flex-shrink: 0;
 }
 .ep-cta:hover { opacity: 0.85; transform: translateY(-1px); }
 
-/* Primary: ticket link */
 .ep-cta-ticket {
   background: linear-gradient(135deg, #8b5cf6, #d946ef);
   color: #fff;
+  border: none;
   box-shadow: 0 4px 16px rgba(139,92,246,0.3);
 }
-
 .ep-cta-wa {
   background: #25d366;
   color: #fff;
+  border: none;
 }
-
-/* Secondary style when ticket CTA already present */
 .ep-cta-secondary {
   background: rgba(37,211,102,0.1);
-  color: #1a9e4e;
-  border: 1.5px solid rgba(37,211,102,0.3);
+  color: #4ade80;
+  border: 1.5px solid rgba(37,211,102,0.25);
   font-size: 0.8rem;
-  padding: 0.45rem 0.9rem;
+  padding: 0.42rem 0.85rem;
   box-shadow: none;
 }
-.ep-cta-secondary:hover {
-  background: rgba(37,211,102,0.18);
-  opacity: 1;
-}
-
+.ep-cta-secondary:hover { background: rgba(37,211,102,0.18); opacity: 1; }
 .ep-cta-ig {
-  background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366);
   color: #fff;
+  border: none;
 }
-.ep-cta-tt {
-  background: #000;
-  color: #fff;
-}
+.ep-cta-tt { background: #111; color: #fff; border: none; }
+.ep-cta-full { width: 100%; margin-bottom: 0.5rem; }
 
-.ep-cta-full {
-  width: 100%;
-  margin-bottom: 0.5rem;
-}
-
-/* ── Aside ── */
+/* ── Aside / Sidebar ── */
 .ep-aside {
   position: sticky;
   top: 80px;
@@ -317,35 +286,34 @@
 }
 
 .ep-aside-card {
-  background: #fff;
-  border: 1.5px solid rgba(139,92,246,0.15);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 20px;
   padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
 }
-
 .ep-aside-logo {
-  height: 44px;
+  height: 40px;
   width: auto;
   object-fit: contain;
+  display: block;
+  filter: brightness(0) invert(1);
+  opacity: 0.75;
   margin-bottom: 1rem;
 }
-
 .ep-aside-card h3 {
   font-size: 1rem;
   font-weight: 800;
-  color: #0f1014;
+  color: #fff;
   margin: 0 0 0.4rem;
 }
 .ep-aside-card p {
   font-size: 0.85rem;
-  color: #5a5f7a;
+  color: rgba(255,255,255,0.5);
   margin: 0 0 1.25rem;
   line-height: 1.5;
 }
 
+.ep-aside-back { text-align: center; }
 .ep-back-btn {
   display: inline-flex;
   align-items: center;
@@ -354,30 +322,20 @@
   font-weight: 700;
   color: #8b5cf6;
   text-decoration: none;
-  transition: opacity 0.15s;
+  transition: color 0.15s;
 }
-.ep-back-btn:hover { opacity: 0.7; }
+.ep-back-btn:hover { color: #a78bfa; }
 
 /* ── Responsive ── */
 @media (max-width: 760px) {
+  .ep-hero { height: 260px; }
   .ep-content {
     grid-template-columns: 1fr;
+    padding: 1.5rem 1rem 4rem;
+    gap: 1.5rem;
   }
-  .ep-aside {
-    position: static;
-  }
-  .ep-hero {
-    height: 240px;
-  }
-  .ep-date-card {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .ep-date-actions {
-    width: 100%;
-  }
-  .ep-cta,
-  .ep-cta-secondary {
-    width: 100%;
-  }
+  .ep-aside { position: static; }
+  .ep-date-card { flex-direction: column; align-items: flex-start; }
+  .ep-date-actions { width: 100%; }
+  .ep-cta, .ep-cta-secondary { width: 100%; }
 }
