@@ -128,6 +128,25 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
   flex-wrap: wrap;
 }
 
+/* ── TYPOGRAPHY GLOBAL ──────────────────────────── */
+/* Section h2 headings */
+.sec h2,
+.sec-gio h2,
+.sec-faq h2,
+.sec-partner-strip h2 {
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 900;
+  color: var(--white);
+  line-height: 1.15;
+}
+/* Section body text */
+.sec p,
+.sec-gio p {
+  color: rgba(255,255,255,0.62);
+  line-height: 1.7;
+  font-size: 0.95rem;
+}
+
 /* ── LABEL pill ─────────────────────────────────── */
 .label {
   display: inline-flex;
@@ -547,9 +566,9 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
 /* ── EVENT CARDS — IMAGE FORWARD ─────────────────── */
 .ev-card {
   position: relative;
-  flex: 0 0 200px;
-  height: 240px;
-  border-radius: 20px;
+  flex: 0 0 230px;
+  height: 300px;
+  border-radius: 22px;
   overflow: hidden;
   cursor: pointer;
   transition: transform 0.28s cubic-bezier(0.34,1.4,0.64,1), box-shadow 0.28s;
@@ -642,36 +661,37 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
   position: absolute;
   bottom: 0; left: 0; right: 0;
   z-index: 2;
-  padding: 0.9rem 1rem;
+  padding: 1rem 1.1rem 1.1rem;
   color: var(--white);
 }
 .ev-body strong {
   display: block;
-  font-size: 0.92rem;
+  font-size: 1rem;
   font-weight: 800;
   line-height: 1.3;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.3rem;
   color: var(--white);
 }
 .ev-body p {
-  font-size: 0.75rem;
-  color: rgba(255,255,255,0.65);
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.7);
   margin: 0;
   line-height: 1.4;
 }
 .ev-more-dates {
-  font-size: 0.7rem;
+  font-size: 0.74rem;
   color: var(--lime);
   font-weight: 700;
-  margin-top: 0.15rem;
+  margin-top: 0.2rem;
 }
 .ev-link {
-  display: inline-block;
-  margin-top: 0.45rem;
-  font-size: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  margin-top: 0.6rem;
+  font-size: 0.78rem;
   font-weight: 800;
   color: var(--lime);
-  text-decoration: none;
+  gap: 0.2rem;
 }
 .ev-link-light { color: var(--lime); }
 
@@ -807,112 +827,45 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
 }
 .cf-submit { width: 100%; }
 
-/* ── PARTNER SECTION ─────────────────────────────── */
-.sec-partner-full {
+/* ── PARTNER STRIP (compact) ─────────────────────── */
+.sec-partner-strip {
   background:
-    radial-gradient(ellipse at 80% 40%, rgba(139,92,246,0.18) 0%, transparent 60%),
-    radial-gradient(ellipse at 10% 70%, rgba(217,70,239,0.1) 0%, transparent 50%),
-    linear-gradient(180deg, #0d0a1c 0%, var(--app) 100%);
-  padding: 5rem var(--side);
-  text-align: center;
+    radial-gradient(ellipse at 80% 50%, rgba(139,92,246,0.14) 0%, transparent 65%),
+    linear-gradient(135deg, #130f24 0%, #0d0a1c 100%);
+  padding: 2.5rem var(--side);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
-.partner-header { margin-bottom: 3.5rem; }
-.partner-header .label { margin: 0 auto 1rem; }
-.partner-header h2 {
-  font-size: clamp(2rem, 4vw, 3.2rem);
-  color: var(--white);
-  font-weight: 900;
-  line-height: 1.12;
-  margin-bottom: 1rem;
-}
-.partner-header > p {
-  color: var(--muted);
-  max-width: 50ch;
-  margin: 0 auto 1.75rem;
-  line-height: 1.7;
-  font-size: 1rem;
-}
-.partner-btns {
+.ps-inner {
   display: flex;
-  justify-content: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  max-width: var(--page);
+  margin: 0 auto;
 }
-
-.partner-stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
-  margin-bottom: 2.5rem;
-}
-.partner-stat {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 1.5rem 1rem;
-  text-align: center;
-  transition: border-color 0.2s, background 0.2s;
-}
-.partner-stat:hover {
-  border-color: rgba(163,230,53,0.25);
-  background: rgba(163,230,53,0.04);
-}
-.partner-stat-val {
-  display: block;
-  font-size: 2.2rem;
+.ps-text { flex: 1; }
+.ps-text .label { margin-bottom: 0.6rem; }
+.ps-text h2 {
+  font-size: clamp(1.2rem, 2.5vw, 1.6rem);
   font-weight: 900;
-  color: var(--lime);
-  line-height: 1;
+  color: var(--white);
   margin-bottom: 0.4rem;
+  line-height: 1.2;
 }
-.partner-stat-label {
-  font-size: 0.8rem;
-  color: var(--muted);
-  font-weight: 600;
-}
-
-.partner-perks {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  text-align: left;
-}
-.partner-perk {
-  display: flex;
-  gap: 0.9rem;
-  align-items: flex-start;
-  padding: 1.25rem;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  transition: background 0.2s, border-color 0.2s;
-}
-.partner-perk:hover {
-  background: rgba(255,255,255,0.07);
-  border-color: rgba(139,92,246,0.25);
-}
-.partner-perk-icon {
-  font-size: 1.25rem;
-  width: 42px; height: 42px;
-  flex-shrink: 0;
-  display: grid;
-  place-items: center;
-  background: rgba(163,230,53,0.08);
-  border-radius: 12px;
-  border: 1px solid rgba(163,230,53,0.12);
-}
-.partner-perk strong {
-  display: block;
-  font-size: 0.9rem;
-  font-weight: 800;
-  color: var(--white);
-  margin-bottom: 0.35rem;
-}
-.partner-perk p {
-  font-size: 0.8rem;
+.ps-text p {
+  font-size: 0.88rem;
   color: var(--muted);
   margin: 0;
-  line-height: 1.55;
+  max-width: 52ch;
+  line-height: 1.6;
+}
+.ps-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 /* ── FAQ SECTION ─────────────────────────────────── */
@@ -1447,7 +1400,12 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
   /* Sections */
   .sec { padding: 2.5rem 1.1rem; }
   .sec-badge-row { padding: 2rem 1.1rem 2.5rem; }
-  .sec-partner-full { padding: 2.5rem 1.25rem; }
+  .sec-partner-strip { padding: 2rem 1.1rem; }
+
+  /* Benefits: hide body text, keep title only */
+  .ben-item p { display: none; }
+  .ben-item { padding: 0.85rem 1rem; }
+  .ben-num { font-size: 1.1rem; }
 
   .gio-benefits { grid-template-columns: 1fr; }
   .partner-stats { grid-template-columns: repeat(2, 1fr); }
@@ -1456,8 +1414,12 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
   .sec-contact { padding: 1.5rem 1.1rem; }
   .cf-row { grid-template-columns: 1fr; }
 
-  /* Event cards: wider on mobile */
-  .ev-card { flex: 0 0 68vw; height: 220px; }
+  /* Event cards: big on mobile */
+  .ev-card { flex: 0 0 76vw; height: 280px; border-radius: 20px; }
+
+  /* Partner strip: stack vertically */
+  .ps-inner { flex-direction: column; align-items: flex-start; gap: 1.25rem; }
+  .ps-actions { justify-content: flex-start; }
 
   /* Contact buttons */
   .contact-buttons { flex-direction: column; }

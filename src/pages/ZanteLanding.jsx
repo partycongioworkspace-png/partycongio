@@ -259,44 +259,18 @@ function ZanteLanding() {
         </div>
       </section>
 
-      {/* ── PARTNER ── */}
-      <section className="sec-partner-full">
-        <div className="partner-header">
-          <p className="label">Collaborazioni 2026</p>
-          <h2>Diventa Partner<br />o Sponsor</h2>
-          <p>Raggiungi un pubblico 18–25 anni ad alta intenzione di acquisto. Beach, boat e night party a Zante 2026.</p>
-          <div className="partner-btns">
-            <a className="btn-lime" href="mailto:partnership@partycongio.com">✉ Richiedi media kit</a>
+      {/* ── PARTNER STRIP ── */}
+      <section className="sec-partner-strip">
+        <div className="ps-inner">
+          <div className="ps-text">
+            <p className="label">Collaborazioni 2026</p>
+            <h2>Vuoi portare il tuo brand a Zante?</h2>
+            <p>Target 18–25 anni. Visibilità reale su beach, boat e night party. 2K+ follower attivi, 500+ partecipanti.</p>
+          </div>
+          <div className="ps-actions">
+            <a className="btn-lime" href="mailto:partnership@partycongio.com">✉ Media kit</a>
             <a className="btn-outline-white" href="#contatti">Parla con Gio</a>
           </div>
-        </div>
-        <div className="partner-stats">
-          {[
-            { val: '2K+', label: 'Follower attivi' },
-            { val: '10+', label: 'Eventi stagione' },
-            { val: '500+', label: 'Partecipanti 2025' },
-            { val: '18–25', label: 'Target età' },
-          ].map((s) => (
-            <div className="partner-stat" key={s.label}>
-              <span className="partner-stat-val">{s.val}</span>
-              <span className="partner-stat-label">{s.label}</span>
-            </div>
-          ))}
-        </div>
-        <div className="partner-perks">
-          {[
-            { icon: '👁', t: 'Visibilità reale', d: 'Sito, reels, stories e community attiva per tutta la stagione.' },
-            { icon: '🎯', t: 'Lead qualificati', d: 'Pubblico giovane con intenzione diretta di acquisto biglietti.' },
-            { icon: '⚡', t: 'Attivazioni custom', d: 'Promo, codici sconto, contenuti branded e brand takeover.' },
-            { icon: '📍', t: 'Presenza in loco', d: 'Branding agli eventi fisici direttamente a Laganas, Zante.' },
-            { icon: '📊', t: 'Report finale', d: 'Statistiche impression, click e conversioni della campagna.' },
-            { icon: '💬', t: 'Contatto diretto', d: 'Interlocutore unico: Gio ti segue dalla firma al risultato.' },
-          ].map((p) => (
-            <div className="partner-perk" key={p.t}>
-              <span className="partner-perk-icon">{p.icon}</span>
-              <div><strong>{p.t}</strong><p>{p.d}</p></div>
-            </div>
-          ))}
         </div>
       </section>
 
