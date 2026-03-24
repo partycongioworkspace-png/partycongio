@@ -44,16 +44,18 @@
 
 /* ── Nav ── */
 .ep-nav {
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 100;
+  left: 0;
+  right: 0;
+  z-index: 200;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.7rem 1.5rem;
-  background: rgba(10, 8, 20, 0.88);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  padding: 0.8rem 1.5rem;
+  background: rgba(7, 5, 15, 0.82);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border-bottom: 1px solid rgba(255,255,255,0.07);
 }
 .ep-nav-logo img {
@@ -79,7 +81,8 @@
 /* ── Hero ── */
 .ep-hero {
   position: relative;
-  height: 380px;
+  height: 420px;
+  margin-top: 62px; /* fixed navbar offset */
   overflow: hidden;
   background: #1e0d36;
 }
@@ -328,7 +331,7 @@
 
 /* ── Responsive ── */
 @media (max-width: 760px) {
-  .ep-hero { height: 260px; }
+  .ep-hero { height: 260px; margin-top: 58px; }
   .ep-content {
     grid-template-columns: 1fr;
     padding: 1.5rem 1rem 4rem;

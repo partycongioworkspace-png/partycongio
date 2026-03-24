@@ -29,17 +29,31 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
 
 /* ── NAVBAR ─────────────────────────────────────── */
 .navbar {
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 100;
+  left: 0;
+  right: 0;
+  z-index: 200;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.7rem 1.4rem;
+  padding: 1rem 1.4rem;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom: 1px solid transparent;
+  transition:
+    background 0.35s ease,
+    backdrop-filter 0.35s ease,
+    border-color 0.35s ease,
+    padding 0.3s ease;
+}
+.navbar-scrolled {
   background: var(--glass);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom-color: var(--border);
+  padding: 0.65rem 1.4rem;
 }
 
 .navbar-logo {
@@ -89,62 +103,120 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
 
 /* ── HERO ────────────────────────────────────────── */
 .hero {
+  position: relative;
   display: grid;
   grid-template-columns: 1fr 420px;
   gap: 2rem;
   align-items: center;
-  min-height: 90vh;
-  padding: 4rem var(--side) 3rem;
-  background:
-    radial-gradient(ellipse at 75% 30%, rgba(139,92,246,0.2) 0%, transparent 55%),
-    radial-gradient(ellipse at 15% 75%, rgba(217,70,239,0.12) 0%, transparent 50%),
-    var(--app);
+  min-height: 100svh;
+  padding: 7rem var(--side) 4rem;
+  background: var(--app);
+  overflow: clip;        /* clips orbs without blocking hcs-outer */
+}
+
+/* animated floating glow orbs */
+.hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(80px);
+}
+.hero-orb-1 {
+  top: -10%;
+  right: -8%;
+  width: 65vw;
+  height: 65vw;
+  max-width: 740px;
+  max-height: 740px;
+  background: radial-gradient(circle, rgba(139,92,246,0.22) 0%, transparent 70%);
+  animation: orb-float-1 14s ease-in-out infinite;
+}
+.hero-orb-2 {
+  bottom: -15%;
+  left: -12%;
+  width: 50vw;
+  height: 50vw;
+  max-width: 580px;
+  max-height: 580px;
+  background: radial-gradient(circle, rgba(217,70,239,0.14) 0%, transparent 70%);
+  animation: orb-float-2 10s ease-in-out infinite;
+}
+
+@keyframes orb-float-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(-30px, 25px) scale(1.08); }
+  66%       { transform: translate(20px, -15px) scale(0.95); }
+}
+@keyframes orb-float-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%       { transform: translate(25px, -20px) scale(1.1); }
 }
 
 .hero-inner {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.35rem;
 }
 
 .hero-inner h1 {
-  font-size: clamp(2.8rem, 5.5vw, 5rem);
-  line-height: 0.92;
-  letter-spacing: -0.03em;
+  font-size: clamp(2.8rem, 5.5vw, 5.2rem);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
   color: var(--white);
-  font-weight: 900;
+  font-weight: 800;
+  /* subtle text gradient */
+  background: linear-gradient(135deg, #fff 60%, rgba(163,230,53,0.6) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .hero-sub {
   max-width: 44ch;
-  color: var(--muted);
+  color: rgba(255,255,255,0.62);
   font-size: 1.05rem;
-  line-height: 1.65;
+  line-height: 1.7;
 }
 
 .hero-actions {
   display: flex;
-  gap: 0.65rem;
+  gap: 0.75rem;
   flex-wrap: wrap;
 }
 
 /* ── TYPOGRAPHY GLOBAL ──────────────────────────── */
-/* Section h2 headings */
 .sec h2,
 .sec-gio h2,
 .sec-faq h2,
-.sec-partner-strip h2 {
+.sec-partner-strip h2,
+.sec-header h2 {
   font-size: clamp(1.5rem, 3vw, 2.2rem);
-  font-weight: 900;
+  font-weight: 800;
   color: var(--white);
   line-height: 1.15;
 }
-/* Section body text */
 .sec p,
 .sec-gio p {
   color: rgba(255,255,255,0.62);
-  line-height: 1.7;
-  font-size: 0.95rem;
+  line-height: 1.72;
+  font-size: 0.96rem;
+}
+/* Gradient text accent on section headings */
+.sec-events h2,
+.sec-soldout h2 {
+  background: linear-gradient(90deg, #fff 40%, rgba(163,230,53,0.7) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.sec-dark h2 {
+  background: linear-gradient(90deg, #fff 40%, rgba(139,92,246,0.8) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* ── LABEL pill ─────────────────────────────────── */
@@ -184,13 +256,16 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
   text-decoration: none;
   border: none;
   cursor: pointer;
-  transition: transform 0.2s, opacity 0.2s, box-shadow 0.2s;
-  box-shadow: 0 0 0 0 rgba(163,230,53,0.4);
+  /* Framer Motion handles hover transform */
+  transition: box-shadow 0.25s, opacity 0.2s;
+  box-shadow:
+    0 0 0 0 rgba(163,230,53,0),
+    0 4px 16px rgba(163,230,53,0.15);
 }
 .btn-lime:hover {
-  transform: translateY(-2px);
-  opacity: 0.92;
-  box-shadow: 0 8px 28px rgba(163,230,53,0.3);
+  box-shadow:
+    0 0 28px rgba(163,230,53,0.35),
+    0 8px 32px rgba(163,230,53,0.2);
 }
 
 .btn-dark {
@@ -268,6 +343,7 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
 /* ── HERO BREAKING-THE-FRAME ────────────────────── */
 .hcs-outer {
   position: relative;
+  z-index: 1;
   width: 340px;
   height: 480px;
   flex-shrink: 0;
@@ -571,13 +647,17 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
   border-radius: 22px;
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.28s cubic-bezier(0.34,1.4,0.64,1), box-shadow 0.28s;
+  /* Framer Motion handles transform; CSS handles glow */
+  transition: box-shadow 0.3s ease;
   text-decoration: none;
   display: block;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.35);
 }
 .ev-card:hover {
-  transform: translateY(-6px) scale(1.02);
-  box-shadow: 0 24px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(139,92,246,0.25);
+  box-shadow:
+    0 0 0 1px rgba(163,230,53,0.3),
+    0 0 40px rgba(163,230,53,0.12),
+    0 24px 60px rgba(0,0,0,0.55);
 }
 
 /* Full-card image */
@@ -1305,7 +1385,7 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
   .hero {
     grid-template-columns: 1fr;
     min-height: auto;
-    padding: 2.5rem 1.4rem 3rem;
+    padding: 6rem 1.4rem 3rem;
     gap: 2rem;
     justify-items: center;
   }
@@ -1353,7 +1433,7 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
     flex-direction: column;
     align-items: center;
     min-height: 100svh;
-    padding: 2rem 1.2rem 2.5rem;
+    padding: 5rem 1.2rem 2.5rem; /* top: fixed navbar offset */
     gap: 0;
     background:
       radial-gradient(ellipse at 50% 10%, rgba(139,92,246,0.25) 0%, transparent 55%),
@@ -1469,13 +1549,8 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
   body { padding-bottom: 5.5rem; }
 }
 
-/* Disable heavy hover effects on touch */
-@media (hover: none), (pointer: coarse) {
-  .ben-item:hover,
-  .ev-card:hover,
-  .partner-perk:hover,
-  .faq-item:hover {
-    transform: none;
-    box-shadow: none;
-  }
+/* Disable glow hover on touch devices */
+@media (hover: none) {
+  .ev-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.35); }
+  .btn-lime:hover { box-shadow: 0 4px 16px rgba(163,230,53,0.15); }
 }

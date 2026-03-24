@@ -1,9 +1,19 @@
 import { useEffect, useState } from 'react'
 import { doc, getDoc } from 'firebase/firestore'
 import { Link, useParams } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { cloudinaryUrl, db } from '../config/firebase'
 import { buildTrackedLink } from '../data/zanteData'
 import './EventPage.css'
+
+const FADE_UP = {
+  hidden:  { opacity: 0, y: 32 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+}
+const STAGGER = {
+  hidden:  {},
+  visible: { transition: { staggerChildren: 0.1 } },
+}
 
 const BADGE_COLORS = {
   'HYPE':        { bg: '#d946ef', text: '#fff',      label: '🔥 Hype' },
@@ -114,8 +124,13 @@ function EventPage() {
       </div>
 
       {/* ── Content ── */}
-      <div className="ep-content">
-        <div className="ep-main">
+      <motion.div
+        className="ep-content"
+        initial="hidden"
+        animate="visible"
+        variants={STAGGER}
+      >
+        <motion.div className="ep-main" variants={FADE_UP}>
           <h1 className="ep-title">{event.title}</h1>
 
           {event.description && (
@@ -175,10 +190,10 @@ function EventPage() {
               </div>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* ── Sidebar ── */}
-        <aside className="ep-aside">
+        <motion.aside className="ep-aside" variants={FADE_UP}>
           <div className="ep-aside-card">
             <img
               src="https://res.cloudinary.com/djb2nkpez/image/upload/w_200,h_64,c_fit,f_auto,q_auto/1-removebg-preview_fddema"
@@ -216,8 +231,8 @@ function EventPage() {
           <div className="ep-aside-back">
             <Link to="/" className="ep-back-btn">← Torna a tutti gli eventi</Link>
           </div>
-        </aside>
-      </div>
+        </motion.aside>
+      </motion.div>
     </div>
   )
 }
