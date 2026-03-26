@@ -329,16 +329,47 @@
 }
 .ep-back-btn:hover { color: #a78bfa; }
 
-/* ── Responsive ── */
+/* ── Responsive tablet (≤ 760px) ── */
 @media (max-width: 760px) {
-  .ep-hero { height: 260px; margin-top: 58px; }
+  .ep-hero {
+    height: 260px;
+    margin-top: 58px;
+  }
   .ep-content {
     grid-template-columns: 1fr;
-    padding: 1.5rem 1rem 4rem;
+    padding: 1.5rem 1.1rem 5rem;
     gap: 1.5rem;
   }
   .ep-aside { position: static; }
-  .ep-date-card { flex-direction: column; align-items: flex-start; }
-  .ep-date-actions { width: 100%; }
+  .ep-date-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+  }
+  .ep-date-actions {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .ep-cta { flex: 1; min-width: 0; justify-content: center; }
+  .ep-cta-secondary { flex: 1; min-width: 0; justify-content: center; }
+}
+
+/* ── Responsive mobile (≤ 480px) ── */
+@media (max-width: 480px) {
+  .ep-nav { padding: 0.65rem 1rem; }
+  .ep-nav-logo img { height: 36px; }
+  .ep-hero { height: 220px; margin-top: 56px; }
+
+  .ep-content { padding: 1.25rem 1rem 5.5rem; gap: 1.25rem; }
+  .ep-title { font-size: clamp(1.5rem, 6.5vw, 2rem); }
+  .ep-desc { font-size: 0.92rem; }
+
+  .ep-date-card { padding: 1rem; }
+  .ep-date-actions { flex-direction: column; }
   .ep-cta, .ep-cta-secondary { width: 100%; }
+
+  .ep-aside-card { padding: 1.25rem; border-radius: 16px; }
+  .ep-aside-card h3 { font-size: 0.95rem; }
+  .ep-aside-card p { font-size: 0.82rem; }
 }

@@ -143,33 +143,40 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
   overflow: clip;
 }
 
-/* Ken Burns background image */
-.hero-bg-img {
+/* ── Video background ── */
+.hero-bg-video-wrap {
   position: absolute;
-  inset: -5%;
+  inset: 0;
   z-index: 0;
-  background-image: url('https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=1920&q=80');
-  background-size: cover;
-  background-position: center 40%;
-  opacity: 0.2;
-  animation: kenburns 30s ease-in-out infinite alternate;
+  overflow: hidden;
 }
-@keyframes kenburns {
-  0%   { transform: scale(1) translate(0, 0); }
-  100% { transform: scale(1.12) translate(-3%, -2%); }
+.hero-bg-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.38;
+  /* subtle scale-in on load */
+  animation: video-scale-in 1.2s ease-out forwards;
+}
+@keyframes video-scale-in {
+  from { transform: scale(1.06); opacity: 0; }
+  to   { transform: scale(1);    opacity: 0.38; }
 }
 
-/* gradient overlay on image */
+/* gradient overlay — heavier to keep text readable over video */
 .hero-overlay {
   position: absolute;
   inset: 0;
   z-index: 0;
-  background: linear-gradient(
-    160deg,
-    rgba(7,5,15,0.7) 0%,
-    rgba(7,5,15,0.4) 50%,
-    rgba(7,5,15,0.65) 100%
-  );
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(7,5,15,0.72) 0%,
+      rgba(7,5,15,0.38) 40%,
+      rgba(7,5,15,0.72) 100%
+    ),
+    radial-gradient(ellipse at 30% 50%, rgba(7,5,15,0.3) 0%, transparent 65%);
 }
 
 /* floating orbs */
@@ -767,18 +774,32 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
 @keyframes hcs-card-b { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
 @keyframes pulse-dot  { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(0.8); } }
 
-/* ── RESPONSIVE 960px ────────────────────────────── */
+/* ── RESPONSIVE 960px (tablet) ───────────────────── */
 @media (max-width: 960px) {
-  .navbar-links a:not(.navbar-cta) { display: none; }
+  .navbar-links a:not(.navbar-cta),
   .navbar-links button:not(.navbar-cta) { display: none; }
 
   .hero {
-    grid-template-columns: 1fr; min-height: auto;
-    padding: 6rem 1.4rem 5rem;
-    gap: 2rem; justify-items: center;
+    grid-template-columns: 1fr;
+    min-height: auto;
+    padding: 6rem 1.6rem 5rem;
+    gap: 2.5rem;
+    justify-items: center;
   }
-  .hero-inner { max-width: 560px; width: 100%; }
-  .hero-stats { position: static; flex-wrap: wrap; justify-content: center; gap: 1.5rem; margin-top: 2.5rem; padding: 0; }
+  .hero-inner { max-width: 540px; width: 100%; text-align: center; }
+  .hero-actions { justify-content: center; }
+
+  /* Stats: switch to in-flow on tablet */
+  .hero-stats {
+    position: static;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    padding: 0;
+    width: 100%;
+    max-width: 540px;
+  }
   .hs-sep { display: none; }
 
   .hcs-outer { width: 300px; height: 420px; margin-top: 0; }
@@ -786,7 +807,8 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
   .cat-card { height: 320px; }
 
   .sec-gio { grid-template-columns: 1fr; gap: 2.5rem; }
-  .gio-photo { height: 380px; }
+  .gio-photo-wrap { max-width: 420px; margin: 0 auto; }
+  .gio-photo { height: 400px; }
   .gio-photo-badge { right: 0; bottom: 1rem; }
 
   .sec-contact { grid-template-columns: 1fr; gap: 2rem; }
@@ -794,98 +816,253 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
   .gio-benefits { grid-template-columns: 1fr 1fr; }
 }
 
-/* ── RESPONSIVE 640px (mobile) ───────────────────── */
+/* ─────────────────────────────────────────────────
+   RESPONSIVE 640px — MOBILE
+   ───────────────────────────────────────────────── */
 @media (max-width: 640px) {
-  .navbar { padding: 0.7rem 1rem; }
-  .navbar-logo-img { height: 42px; max-width: 145px; }
 
-  /* Hero */
+  /* ── Navbar ── */
+  .navbar { padding: 0.65rem 1rem; }
+  .navbar-logo-img { height: 40px; max-width: 138px; }
+
+  /* ── Hero full-screen ── */
   .hero {
-    display: flex; flex-direction: column; align-items: center;
-    min-height: 100svh; padding: 5rem 1.2rem 3rem; gap: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100svh;
+    padding: 5rem 1.1rem 2rem;
+    gap: 0;
+    overflow: hidden; /* clip orbs + animated card entry so nothing scrolls outside */
     background:
-      radial-gradient(ellipse at 50% 10%, rgba(139,92,246,0.25) 0%, transparent 55%),
-      radial-gradient(ellipse at 80% 90%, rgba(217,70,239,0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 15%, rgba(139,92,246,0.28) 0%, transparent 55%),
+      radial-gradient(ellipse at 80% 85%, rgba(217,70,239,0.14) 0%, transparent 50%),
       var(--app);
   }
-  .hero-bg-img { opacity: 0.12; }
+  /* reduce video opacity on mobile for readability */
+  .hero-bg-video { opacity: 0.22; }
+  /* shrink orbs so they stay within the hero bounds */
+  .hero-orb-1 { width: 80vw; height: 80vw; right: -15%; top: -8%; }
+  .hero-orb-2 { width: 65vw; height: 65vw; left: -15%; bottom: -8%; }
+
+  /* ── Card: order 1, at the top ── */
   .hcs-outer {
-    display: block; order: 1; width: 240px; height: 320px;
-    margin: 0 auto 2rem; overflow: hidden; border-radius: 24px; flex-shrink: 0;
+    display: block;
+    order: 1;
+    width: 218px;
+    height: 296px;
+    margin: 0 auto 1.6rem;
+    overflow: hidden;
+    border-radius: 22px;
+    flex-shrink: 0;
   }
-  .hcs-frame { top: 0; border-radius: 24px; }
-  .hcs-person { height: 100%; width: 100%; left: 0; transform: none; border-radius: 20px; }
+  .hcs-frame  { top: 0; border-radius: 22px; }
+  .hcs-person { height: 100%; width: 100%; left: 0; transform: none; border-radius: 18px; }
   .hcs-person img { object-position: center 5%; }
-  .hcs-pill-top { top: 0.7rem; left: 0.7rem; right: auto; font-size: 0.66rem; padding: 0.32rem 0.65rem; }
-  .hcs-badge { top: 0.7rem; right: 0.7rem; left: auto; width: 38px; height: 38px; font-size: 0.58rem; }
-  .hcs-chip-live { bottom: 3.8rem; left: 0.7rem; font-size: 0.68rem; padding: 0.32rem 0.6rem; }
-  .hcs-chip-crew { bottom: 0.7rem; right: 0.7rem; left: auto; font-size: 0.68rem; padding: 0.32rem 0.6rem; }
-  .hcs-glow { width: 120px; height: 120px; }
-  .hero-inner { order: 2; width: 100%; text-align: center; }
-  .hero-inner h1 { font-size: clamp(2rem, 9vw, 2.8rem); }
-  .hero-actions { justify-content: center; }
-  .hero-actions .btn-lime, .hero-actions .btn-outline-white { flex: 1; justify-content: center; }
-  .hero-stats { position: static; flex-wrap: wrap; justify-content: center; gap: 1.2rem 0; margin-top: 2rem; padding: 0; }
+  /* keep all chips inside the card bounds on mobile */
+  .hcs-pill-top  { top: 0.65rem; left: 0.65rem; right: auto;  font-size: 0.6rem;  padding: 0.26rem 0.55rem; }
+  .hcs-badge     { top: 0.65rem; right: 0.65rem; left: auto;  width: 32px; height: 32px; font-size: 0.52rem; }
+  .hcs-chip-live { bottom: 3.2rem; left: 0.65rem; right: auto; font-size: 0.62rem; padding: 0.26rem 0.52rem; }
+  .hcs-chip-crew { bottom: 0.65rem; right: 0.65rem; left: auto; font-size: 0.62rem; padding: 0.26rem 0.52rem; }
+  .hcs-glow { width: 100px; height: 100px; }
+
+  /* ── Text block: order 2 ── */
+  .hero-inner {
+    order: 2;
+    width: 100%;
+    text-align: center;
+  }
+  .hero-inner h1 { font-size: clamp(1.9rem, 8.5vw, 2.65rem); }
+  .hero-sub { font-size: 0.93rem; max-width: 100%; }
+  .hero-actions {
+    justify-content: center;
+    gap: 0.55rem;
+  }
+  .hero-actions .btn-lime,
+  .hero-actions .btn-outline-white {
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+    font-size: 0.88rem;
+    padding: 0.8rem 0.9rem;
+  }
+
+  /* ── Stats strip: order 3, in a glass card ── */
+  .hero-stats {
+    order: 3;
+    position: static;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 0;
+    margin-top: 1.5rem;
+    padding: 1.1rem 1rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    width: 100%;
+  }
   .hs-sep { display: none; }
-  .hs-item { padding: 0 1.25rem; }
-  .hs-item span { font-size: 1.5rem; }
+  .hs-item { padding: 0 1rem; }
+  .hs-item span { font-size: 1.35rem; }
+  .hs-item p { font-size: 0.62rem; }
 
-  /* Categories */
-  .sec-categories { padding: 2.5rem 1.1rem; }
-  .cat-grid { grid-template-columns: 1fr; gap: 1rem; }
-  .cat-card { height: 280px; }
-  .cat-body h3 { font-size: 1.5rem; }
+  /* ── Category section ── */
+  .sec-categories { padding: 2.5rem 1.1rem 2rem; }
+  .cat-header { margin-bottom: 1.5rem; }
+  .cat-header h2 { font-size: clamp(1.45rem, 6vw, 1.8rem); }
+  .cat-header p { font-size: 0.9rem; }
+  .cat-grid { grid-template-columns: 1fr; gap: 0.8rem; }
+  .cat-card { height: 235px; border-radius: 20px; }
+  .cat-body { padding: 1.2rem 1.4rem; }
+  .cat-icon { font-size: 1.7rem; margin-bottom: 0.35rem; }
+  .cat-body h3 { font-size: 1.35rem; }
+  .cat-subtitle { font-size: 0.82rem; margin-bottom: 0.8rem; }
+  .cat-cta-pill { font-size: 0.78rem; padding: 0.38rem 0.95rem; }
 
-  /* Sections */
-  .sec { padding: 2.5rem 1.1rem; }
-  .sec-badge-row { padding: 2rem 1.1rem 2.5rem; }
+  /* ── Scroll rows: edge-to-edge with scroll snap ── */
+  .sec-events,
+  .sec-badge-row,
+  .sec-soldout { padding-left: 0; padding-right: 0; }
+  .sec-events .sec-header,
+  .sec-badge-row .sec-header,
+  .sec-soldout .sec-header { padding-left: 1.1rem; padding-right: 1.1rem; }
+
+  .scroll-row {
+    padding-left: 1.1rem;
+    padding-right: 1.1rem;
+    scroll-snap-type: x mandatory;
+    gap: 0.8rem;
+  }
+  .ev-card {
+    flex: 0 0 75vw;
+    height: 258px;
+    border-radius: 20px;
+    scroll-snap-align: start;
+  }
+
+  /* ── Common sections ── */
+  .sec { padding: 2.4rem 1.1rem; }
+  .sec-badge-row { padding: 2rem 0 2.4rem; }
   .sec-partner-strip { padding: 2rem 1.1rem; }
-  .gio-benefits { grid-template-columns: 1fr; }
+  .sec-header { flex-direction: column; align-items: flex-start; gap: 0.65rem; }
+  .sec-header h2 { font-size: clamp(1.25rem, 5.5vw, 1.6rem); }
+  .ev-loading { padding: 1.5rem 1.1rem; }
+
+  /* ── Gio section ── */
+  .sec-gio { padding: 2.4rem 1.1rem; }
+  .gio-photo-wrap { width: 100%; max-width: 100%; margin: 0 auto; }
+  .gio-photo { height: 280px; border-radius: 20px; }
+  .gio-photo-badge {
+    right: 0.75rem;
+    bottom: 0.75rem;
+    font-size: 0.74rem;
+    padding: 0.4rem 0.85rem;
+  }
+  .gio-col { gap: 1.4rem; padding-top: 0; }
+  .gio-text h2 { font-size: clamp(1.45rem, 6vw, 1.85rem); }
+  .gio-text p { font-size: 0.92rem; }
+  .gio-benefits { grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  .ben-item { padding: 0.85rem 0.9rem; gap: 0.65rem; }
   .ben-item p { display: none; }
-  .gio-photo { height: 280px; }
-  .gio-photo-badge { right: 0; bottom: 0.75rem; font-size: 0.78rem; padding: 0.45rem 0.9rem; }
+  .ben-num { font-size: 1.1rem; min-width: 1.8ch; }
+  .ben-item strong { font-size: 0.8rem; }
 
-  /* Events */
-  .ev-card { flex: 0 0 76vw; height: 280px; }
+  /* ── Contact section ── */
+  .sec-contact { padding: 2rem 1.1rem; }
+  .contact-avatar { width: 70px; height: 70px; font-size: 0.88rem; border-radius: 20px; }
+  .contact-bubbles span { font-size: 0.78rem; padding: 0.5rem 0.85rem; }
+  .contact-text h2 { font-size: clamp(1.35rem, 5.5vw, 1.75rem); }
+  .contact-text > p { font-size: 0.9rem; }
+  .contact-buttons { flex-direction: column; gap: 0.6rem; }
+  .contact-buttons .btn-lime,
+  .contact-buttons .btn-dark { width: 100%; justify-content: center; padding: 0.9rem 1rem; }
+  .cf-row { grid-template-columns: 1fr; gap: 0.6rem; }
+  .contact-form input,
+  .contact-form textarea,
+  .cf-full { font-size: 0.9rem; padding: 0.75rem 0.9rem; border-radius: 10px; }
 
-  /* Contact */
-  .sec-contact { padding: 1.5rem 1.1rem; }
-  .cf-row { grid-template-columns: 1fr; }
-  .contact-buttons { flex-direction: column; }
-  .contact-buttons .btn-lime, .contact-buttons .btn-dark { width: 100%; justify-content: center; }
+  /* ── Partner strip ── */
+  .ps-inner { flex-direction: column; align-items: flex-start; gap: 1.1rem; }
+  .ps-text h2 { font-size: clamp(1.05rem, 4.5vw, 1.3rem); }
+  .ps-text p { font-size: 0.84rem; }
+  .ps-actions { justify-content: flex-start; width: 100%; gap: 0.6rem; }
+  .ps-actions .btn-lime,
+  .ps-actions .btn-outline-white { flex: 1; justify-content: center; font-size: 0.85rem; }
 
-  /* Partner */
-  .ps-inner { flex-direction: column; align-items: flex-start; gap: 1.25rem; }
-  .ps-actions { justify-content: flex-start; }
+  /* ── FAQ ── */
+  .sec-faq h2 { font-size: clamp(1.35rem, 5.5vw, 1.65rem); }
+  .faq-item summary { font-size: 0.88rem; padding: 1rem 1.1rem; }
+  .faq-item p { font-size: 0.84rem; padding: 0 1.1rem 1rem; }
 
-  /* Modal */
-  .modal-ev-card { grid-template-columns: 90px 1fr; }
+  /* ── Footer ── */
+  .footer { padding: 2.5rem 1.1rem 5rem; }
+  .footer-logo { height: 44px; }
 
-  /* Mobile bar */
+  /* ── Modal ── */
+  .modal-ev-card { grid-template-columns: 86px 1fr; }
+  .modal-head h3 { font-size: 1rem; }
+  .modal-ev-info h4 { font-size: 0.88rem; }
+
+  /* ── Fixed bottom bar ── */
   .mobile-bar {
     position: fixed;
     bottom: calc(env(safe-area-inset-bottom, 0px) + 0.5rem);
     left: 0.6rem; right: 0.6rem;
-    display: grid; grid-template-columns: 1fr 1fr 1fr;
-    gap: 0.4rem; padding: 0.5rem;
-    background: rgba(7,5,15,0.96);
-    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(139,92,246,0.25); border-radius: 20px;
-    z-index: 150; box-shadow: 0 -8px 40px rgba(0,0,0,0.6);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.4rem;
+    padding: 0.5rem;
+    background: rgba(7,5,15,0.97);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(139,92,246,0.28);
+    border-radius: 20px;
+    z-index: 150;
+    box-shadow:
+      0 -4px 30px rgba(0,0,0,0.55),
+      0 0 0 1px rgba(139,92,246,0.06);
   }
-  .mobile-bar button, .mobile-bar a {
-    height: 48px; border-radius: 14px;
-    background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.18);
-    color: var(--white); font-weight: 800; font-size: 0.8rem;
-    display: grid; place-items: center; text-decoration: none; transition: background 0.15s;
+  .mobile-bar button,
+  .mobile-bar a {
+    height: 50px;
+    border-radius: 14px;
+    background: rgba(139,92,246,0.1);
+    border: 1px solid rgba(139,92,246,0.18);
+    color: var(--white);
+    font-weight: 800;
+    font-size: 0.82rem;
+    display: grid;
+    place-items: center;
+    text-decoration: none;
+    transition: background 0.12s;
+    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
   }
-  .mobile-bar button:hover, .mobile-bar a:hover { background: rgba(139,92,246,0.22); }
+  .mobile-bar button:active,
+  .mobile-bar a:active { background: rgba(139,92,246,0.28); transform: scale(0.97); }
 
-  body { padding-bottom: 5.5rem; }
+  body { padding-bottom: 6rem; }
 }
 
-/* Touch: no glow hover */
+/* ── Very small screens (≤ 380px) ─────────────────── */
+@media (max-width: 380px) {
+  .hero { padding: 4.5rem 1rem 1.5rem; }
+  .hcs-outer { width: 196px; height: 268px; }
+  .hero-inner h1 { font-size: clamp(1.65rem, 8vw, 2.1rem); }
+  .hero-actions .btn-lime,
+  .hero-actions .btn-outline-white { font-size: 0.82rem; padding: 0.75rem 0.75rem; }
+  .hs-item span { font-size: 1.15rem; }
+  .hs-item p { font-size: 0.58rem; }
+  .cat-card { height: 210px; }
+  .cat-body h3 { font-size: 1.2rem; }
+  .ev-card { flex: 0 0 82vw; height: 240px; }
+  .gio-photo { height: 250px; }
+  .gio-benefits { grid-template-columns: 1fr; }
+}
+
+/* ── Touch devices: remove glow effects for perf ── */
 @media (hover: none) {
   .ev-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.35); }
   .btn-lime:hover { box-shadow: 0 4px 20px rgba(163,230,53,0.18); }
+  .cat-card:hover { box-shadow: none; }
 }

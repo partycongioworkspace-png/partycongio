@@ -179,8 +179,19 @@ function ZanteLanding() {
 
       {/* ══ HERO ═════════════════════════════════════ */}
       <section className="hero">
-        {/* Ken Burns background image */}
-        <div className="hero-bg-img" />
+        {/* Festival video background */}
+        <div className="hero-bg-video-wrap">
+          <video
+            className="hero-bg-video"
+            autoPlay
+            muted
+            loop
+            playsInline
+            poster="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=1920&q=80"
+          >
+            <source src="https://assets.mixkit.co/videos/4269/4269-720.mp4" type="video/mp4" />
+          </video>
+        </div>
 
         {/* gradient overlay */}
         <div className="hero-overlay" />

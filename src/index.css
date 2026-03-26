@@ -14,6 +14,12 @@
 body {
   margin: 0;
   min-width: 320px;
+  overflow-x: hidden; /* prevent horizontal scroll from overflow elements */
+}
+
+/* Needed so overflow-x: hidden on body works correctly in all browsers */
+html {
+  overflow-x: hidden;
 }
 
 /* Apply Syne to headings only */
