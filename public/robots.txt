@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://partycongio.it/sitemap.xml

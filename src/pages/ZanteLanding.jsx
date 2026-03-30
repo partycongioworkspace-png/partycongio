@@ -103,13 +103,15 @@ function ScrollRowArrows({ children, className = '', autoScroll = false }) {
 
 /* ─── LifePassWristband ──────────────────────── */
 function LifePassWristband() {
-  const cardRef = useRef(null)
-  const mouseX  = useMotionValue(0)
-  const mouseY  = useMotionValue(0)
-  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [18, -18]), { stiffness: 200, damping: 22 })
-  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-18, 18]), { stiffness: 200, damping: 22 })
+  const cardRef   = useRef(null)
+  const mouseX    = useMotionValue(0)
+  const mouseY    = useMotionValue(0)
+  const rotateX   = useSpring(useTransform(mouseY, [-0.5, 0.5], [12, -12]), { stiffness: 180, damping: 26 })
+  const rotateY   = useSpring(useTransform(mouseX, [-0.5, 0.5], [-12, 12]), { stiffness: 180, damping: 26 })
+  const isTouch   = typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches
 
   function onMouseMove(e) {
+    if (isTouch || !cardRef.current) return
     const r = cardRef.current.getBoundingClientRect()
     mouseX.set((e.clientX - r.left) / r.width  - 0.5)
     mouseY.set((e.clientY - r.top)  / r.height - 0.5)
@@ -119,25 +121,25 @@ function LifePassWristband() {
   return (
     <div className="lp-ticket-outer">
       <div className="lp-ticket-glow" />
-      {/* floating wrapper — CSS keyframe handles levitate, Framer handles 3D tilt */}
       <div className="lp-float-wrap">
         <motion.div
           ref={cardRef}
           className="lp-wristband-wrap"
-          style={{ rotateX, rotateY }}
+          style={isTouch ? {} : { rotateX, rotateY }}
           onMouseMove={onMouseMove}
           onMouseLeave={onMouseLeave}
-          initial={{ opacity: 0, y: 80, rotate: -8 }}
+          initial={{ opacity: 0, y: 60, rotate: -8 }}
           whileInView={{ opacity: 1, y: 0, rotate: -8 }}
           viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-          whileHover={{ scale: 1.07 }}
+          transition={{ duration: 1.0, ease: [0.22, 1, 0.36, 1] }}
+          whileHover={isTouch ? {} : { scale: 1.06 }}
         >
           <img
             src="/life-pass-wristband.png"
             alt="Life Pass Wristband — Party con Gio Zante 2026"
             className="lp-wristband-img"
             draggable={false}
+            loading="lazy"
           />
         </motion.div>
       </div>
@@ -160,9 +162,9 @@ function EventCard({ ev }) {
     >
       <div className="ev-thumb">
         {ev.imageId
-          ? <img src={cloudinaryUrl(ev.imageId, 'w_600,h_800,c_fill,g_auto,q_auto:best,f_auto')} alt={ev.title} />
+          ? <img src={cloudinaryUrl(ev.imageId, 'w_520,h_720,c_fill,g_auto,q_auto:good,f_auto')} alt={ev.title} loading="lazy" decoding="async" />
           : ev.imageUrl
-            ? <img src={cloudinaryFetch(ev.imageUrl, 'w_600,h_800,c_fill,g_auto,q_auto:best,f_auto')} alt={ev.title} />
+            ? <img src={cloudinaryFetch(ev.imageUrl, 'w_520,h_720,c_fill,g_auto,q_auto:good,f_auto')} alt={ev.title} loading="lazy" decoding="async" />
             : <div className="ev-thumb-gradient" />
         }
         {ev.badge && (
@@ -515,9 +517,7 @@ function ZanteLanding() {
           <p className="lp-note">+9.000 persone lo hanno già ricevuto nel 2025</p>
         </motion.div>
 
-        <div className="lp-float-wrap">
-          <LifePassWristband />
-        </div>
+        <LifePassWristband />
       </section>
 
       {/* ══ TUTTI GLI EVENTI ═════════════════════════ */}
@@ -561,7 +561,6 @@ function ZanteLanding() {
       {BADGE_SECTIONS.map(({ badge, icon, title, dark }) => {
         const badgeEvents = chronoSort(events.filter((e) => e.badge === badge))
         if (badgeEvents.length === 0) return null
-        const isHype = badge === 'HYPE'
         return (
           <Section key={badge} className={`sec sec-badge-row${dark ? ' sec-dark' : ''}`}>
             <div className="sec-header">
@@ -579,26 +578,13 @@ function ZanteLanding() {
                 Vedi tutti →
               </motion.button>
             </div>
-            {isHype ? (
-              <div className="hype-marquee-wrap">
-                <div className="hype-marquee-track">
-                  {[...badgeEvents, ...badgeEvents].map((ev, i) => (
-                    <EventCard key={`${ev.id}-${i}`} ev={ev} />
-                  ))}
-                </div>
+            <div className="hype-marquee-wrap">
+              <div className="hype-marquee-track">
+                {[...badgeEvents, ...badgeEvents].map((ev, i) => (
+                  <EventCard key={`${ev.id}-${i}`} ev={ev} />
+                ))}
               </div>
-            ) : (
-              <ScrollRowArrows>
-                {badgeEvents.slice(0, 4).map((ev) => <EventCard key={ev.id} ev={ev} />)}
-              </ScrollRowArrows>
-            )}
-            {!isHype && badgeEvents.length > 4 && (
-              <div className="sec-more-cta">
-                <motion.button type="button" className={dark ? 'btn-white' : 'btn-lime'} onClick={() => openModal(badge)} whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
-                  🎉 SCOPRI TUTTI ({badgeEvents.length})
-                </motion.button>
-              </div>
-            )}
+            </div>
           </Section>
         )
       })}
@@ -741,7 +727,7 @@ function ZanteLanding() {
       <div className="mobile-bar">
         <button type="button" onClick={() => openModal('tutti')}>🎉 EVENTI</button>
         <a href="#gio">CHI SONO</a>
-        <a href="#contatti">CONTATTI</a>
+        <a href="#contatti">CONTATTAMI</a>
       </div>
 
       <EventsModal

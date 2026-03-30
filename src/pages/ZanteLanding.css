@@ -1121,7 +1121,9 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
 /* floating wrapper */
 .lp-float-wrap {
   animation: lp-float 2.8s ease-in-out infinite;
-  will-change: transform;
+}
+@media (hover: none), (max-width: 640px) {
+  .lp-float-wrap { animation: none; }
 }
 /* 3D wristband image */
 .lp-wristband-wrap {
