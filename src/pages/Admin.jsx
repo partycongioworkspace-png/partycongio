@@ -470,6 +470,7 @@ service cloud.firestore {
                         <option value="TOP PICK">💎 TOP PICK — Il più scelto</option>
                         <option value="CONSIGLIATO">⭐ CONSIGLIATO — Consigliato da Gio</option>
                         <option value="PROMO">🎯 PROMO — Offerta speciale</option>
+                        <option value="SPECIAL GUEST">🎤 SPECIAL GUEST — Artista ospite</option>
                         <option value="SOLD OUT">🚫 SOLD OUT — Esaurito</option>
                       </select>
                     </div>

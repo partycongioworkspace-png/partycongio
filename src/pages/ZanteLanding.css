@@ -73,7 +73,7 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
   text-align: center; font-size: 1.6rem;
 }
 .footer-logo-text .logo-accent { color: #07050f; }
-.footer-logo-text .logo-mid    { color: rgba(7,5,15,0.55); }
+.footer-logo-text .logo-mid    { color: #ffffff; }
 
 .navbar-links {
   display: flex;
@@ -412,8 +412,9 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
 }
 .cat-header p {
   color: var(--muted);
-  font-size: 1rem;
-  max-width: 46ch;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  max-width: none;
   margin: 0 auto;
   line-height: 1.65;
 }
@@ -537,16 +538,19 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
 
 /* ── EVENT CARDS ─────────────────────────────────── */
 .ev-card {
-  position: relative; flex: 0 0 220px; height: 340px;
-  border-radius: 18px; overflow: hidden; cursor: pointer;
-  transition: box-shadow 0.3s ease;
+  position: relative; flex: 0 0 260px; height: 390px;
+  border-radius: 20px; overflow: hidden; cursor: pointer;
+  transition: box-shadow 0.3s ease, outline 0.3s ease;
   text-decoration: none; display: block;
   box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+  outline: 2px solid rgba(255,255,255,0.06);
+  outline-offset: 0px;
 }
 .ev-card:hover {
+  outline: 2px solid rgba(163,230,53,0.65);
+  outline-offset: 2px;
   box-shadow:
-    0 0 0 1px rgba(163,230,53,0.3),
-    0 0 40px rgba(163,230,53,0.12),
+    0 0 28px rgba(163,230,53,0.2),
     0 24px 60px rgba(0,0,0,0.55);
 }
 .ev-thumb { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
@@ -571,8 +575,9 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
 .ev-badge-hype        { background: var(--pink);   color: #fff; }
 .ev-badge-top-pick    { background: var(--violet); color: #fff; }
 .ev-badge-consigliato { background: var(--lime);   color: var(--app); }
-.ev-badge-promo       { background: rgba(163,230,53,0.15); color: var(--lime); border: 1px solid rgba(163,230,53,0.35); }
-.ev-badge-sold-out    { background: #ef4444; color: #fff; }
+.ev-badge-promo         { background: rgba(163,230,53,0.15); color: var(--lime); border: 1px solid rgba(163,230,53,0.35); }
+.ev-badge-sold-out      { background: #ef4444; color: #fff; }
+.ev-badge-special-guest { background: linear-gradient(135deg, #b8860b, #ffd700); color: #07050f; }
 .ev-badge-default     { background: rgba(255,255,255,0.12); color: #fff; }
 .ev-risk-chip {
   position: absolute; top: 0.7rem; right: 0.7rem; z-index: 3;
@@ -652,23 +657,26 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
 
 /* ── CONTACT ─────────────────────────────────────── */
 .sec-contact {
-  display: grid; grid-template-columns: auto 1fr; gap: 3.5rem; align-items: start;
+  display: grid; grid-template-columns: 280px 1fr; gap: 3.5rem; align-items: start;
   background: #a3e635;
   clip-path: polygon(0 0, 100% 2rem, 100% 100%, 0 100%);
   padding-top: calc(var(--sec-pad, 3rem) + 2rem);
 }
-.contact-card { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; }
-.contact-avatar {
-  width: 88px; height: 88px; border-radius: 26px;
-  background: #07050f; color: #a3e635;
-  font-weight: 900; font-size: 1rem; display: grid; place-items: center;
-  box-shadow: 0 12px 36px rgba(0,0,0,0.2); letter-spacing: 0.05em;
+/* photo slot on left */
+.contact-photo-wrap {
+  position: relative; width: 100%; border-radius: 24px; overflow: hidden;
+  aspect-ratio: 3/4;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.22);
+  background: rgba(0,0,0,0.15);
 }
-.contact-bubbles { display: flex; flex-direction: column; gap: 0.5rem; }
-.contact-bubbles span {
-  background: rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.18);
-  border-radius: 14px; padding: 0.6rem 1.1rem; font-size: 0.82rem;
-  color: #07050f; white-space: nowrap; font-weight: 700;
+.contact-photo {
+  width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block;
+}
+.contact-photo-placeholder {
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  font-weight: 900; font-size: 2rem; color: rgba(7,5,15,0.35);
+  letter-spacing: 0.1em;
 }
 .contact-text > .label {
   margin-bottom: 0.75rem;
@@ -826,94 +834,57 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
 /* ════════════════════════════════════════════════════
    PROMO PACK SECTION
    ════════════════════════════════════════════════════ */
+/* ── Promo Pack ──────────────────────────────── */
 .sec-promo-pack {
   background:
-    radial-gradient(ellipse at 20% 50%, rgba(163,230,53,0.12) 0%, transparent 55%),
-    radial-gradient(ellipse at 85% 30%, rgba(163,230,53,0.07) 0%, transparent 50%),
+    radial-gradient(ellipse at 20% 50%, rgba(163,230,53,0.1) 0%, transparent 55%),
     var(--app2);
-  padding: 5rem var(--side);
+  padding: 4rem var(--side);
   border-top: 1px solid var(--border);
-}
-.pp-badge-row { text-align: center; margin-bottom: 2.5rem; }
-.pp-badge {
-  display: inline-block;
-  font-size: 0.75rem; font-weight: 900;
-  letter-spacing: 0.14em; text-transform: uppercase;
-  color: #07050f;
-  background: #a3e635;
-  border-radius: 999px; padding: 0.35rem 1.1rem;
 }
 .pp-inner {
   display: grid;
-  grid-template-columns: 1fr 380px;
-  gap: 4rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
   align-items: center;
   max-width: var(--page);
   margin: 0 auto;
 }
-.pp-text p { color: rgba(255,255,255,0.65); font-size: 1rem; line-height: 1.72; max-width: 50ch; }
-.pp-price-inline { color: #a3e635; font-size: 1.3em; }
-.pp-cta { margin-top: 2rem; display: inline-flex; font-size: 1rem; padding: 1rem 2rem; }
-
-/* ── Price card ── */
-.pp-card {
-  background: linear-gradient(155deg, #0d1a0a 0%, #0a160a 50%, #130d28 100%);
-  border: 1.5px solid rgba(163,230,53,0.3);
-  border-radius: 24px;
-  padding: 2rem 1.75rem;
-  box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(163,230,53,0.1);
-}
-.pp-card-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 1.5rem;
-}
-.pp-card-label {
-  font-family: 'Syne', sans-serif;
-  font-size: 0.75rem; font-weight: 900;
-  letter-spacing: 0.14em; text-transform: uppercase;
-  color: rgba(255,255,255,0.5);
-}
-.pp-card-tag {
-  font-size: 0.65rem; font-weight: 900;
-  letter-spacing: 0.1em; text-transform: uppercase;
+.pp-badge {
+  display: inline-block;
+  font-size: 0.72rem; font-weight: 900;
+  letter-spacing: 0.13em; text-transform: uppercase;
   color: #07050f; background: #a3e635;
-  border-radius: 999px; padding: 0.22rem 0.75rem;
+  border-radius: 999px; padding: 0.3rem 1rem;
+  margin-bottom: 1.2rem;
 }
-.pp-price-block {
-  display: flex; align-items: flex-start; gap: 0.25rem;
-  margin-bottom: 1.75rem;
-  line-height: 1;
-}
-.pp-currency {
-  font-family: 'Syne', sans-serif;
-  font-size: 1.8rem; font-weight: 800;
-  color: #a3e635; margin-top: 0.35rem;
-}
-.pp-amount {
-  font-family: 'Syne', sans-serif;
-  font-size: 5rem; font-weight: 800;
-  color: #a3e635; letter-spacing: -0.04em;
-  line-height: 1;
-}
-.pp-per {
-  font-size: 0.82rem; font-weight: 700;
-  color: rgba(255,255,255,0.45);
-  align-self: flex-end; padding-bottom: 0.5rem; padding-left: 0.25rem;
-}
-.pp-events-list {
-  display: flex; flex-direction: column; gap: 0.65rem;
-  margin-bottom: 1.5rem;
-}
-.pp-event-item {
-  display: flex; align-items: center; gap: 0.75rem;
-  font-size: 0.9rem; font-weight: 600;
-  color: rgba(255,255,255,0.78);
-}
-.pp-event-item span:first-child { font-size: 1.1rem; }
-.pp-divider {
-  border-top: 1px dashed rgba(163,230,53,0.2);
+.pp-text h2 { margin: 0.4rem 0 0.9rem; }
+.pp-text p { color: rgba(255,255,255,0.65); font-size: 0.97rem; line-height: 1.7; max-width: 46ch; }
+.pp-price-row {
+  display: flex; align-items: baseline; gap: 0.75rem;
   margin-bottom: 1rem;
 }
+.pp-amount-big {
+  font-family: 'Syne', sans-serif;
+  font-size: 3rem; font-weight: 900;
+  color: #a3e635; letter-spacing: -0.03em; line-height: 1;
+}
+.pp-old-price {
+  font-size: 1.2rem; font-weight: 700;
+  color: rgba(255,255,255,0.35);
+  text-decoration: line-through;
+}
+.pp-cta { margin-top: 1.6rem; display: inline-flex; font-size: 0.97rem; padding: 0.95rem 1.8rem; }
+
+/* flyer column */
+.pp-flyer { display: flex; align-items: center; justify-content: center; }
+.pp-flyer-img {
+  width: 100%; max-width: 420px;
+  border-radius: 18px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+}
+
+/* old card styles — kept for safety but not used */
 .pp-card-note {
   font-size: 0.74rem; font-weight: 600;
   color: rgba(255,255,255,0.35);
@@ -926,8 +897,11 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
   .pp-card { max-width: 380px; margin: 0 auto; }
 }
 @media (max-width: 640px) {
-  .sec-promo-pack { padding: 3.5rem 1.1rem; }
-  .pp-amount { font-size: 4rem; }
+  .sec-promo-pack { padding: 3rem 1.1rem; }
+  .pp-inner { grid-template-columns: 1fr; gap: 2rem; }
+  .pp-flyer { order: -1; } /* flyer prima del testo su mobile */
+  .pp-flyer-img { max-width: 320px; }
+  .pp-amount-big { font-size: 2.4rem; }
 }
 
 /* ── MODAL ───────────────────────────────────────── */
@@ -977,8 +951,9 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
 .badge-hype        { background: var(--pink);   color: #fff; }
 .badge-top-pick    { background: var(--violet); color: #fff; }
 .badge-consigliato { background: var(--lime);   color: var(--app); }
-.badge-promo       { background: var(--app);    color: var(--lime); }
-.badge-sold-out    { background: #ef4444;       color: #fff; }
+.badge-promo         { background: var(--app);    color: var(--lime); }
+.badge-sold-out      { background: #ef4444;       color: #fff; }
+.badge-special-guest { background: linear-gradient(135deg, #b8860b, #ffd700); color: #07050f; font-weight: 900; }
 .badge-default     { background: rgba(255,255,255,0.15); color: #fff; }
 .modal-ev-info { padding: 0.85rem 1rem; display: flex; flex-direction: column; gap: 0.35rem; }
 .modal-ev-info h4 { font-size: 0.95rem; font-weight: 800; color: var(--white); margin: 0; line-height: 1.3; }
@@ -1078,33 +1053,44 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
 }
 
 /* ── 3D Ticket ── */
+@keyframes lp-float {
+  0%   { transform: translateY(0px)   rotate(-8deg); }
+  50%  { transform: translateY(-32px) rotate(-8deg); }
+  100% { transform: translateY(0px)   rotate(-8deg); }
+}
+
 .lp-ticket-outer {
   position: relative; z-index: 1;
   display: flex; justify-content: center; align-items: center;
 }
+/* floating wrapper */
+.lp-float-wrap {
+  animation: lp-float 2.8s ease-in-out infinite;
+  will-change: transform;
+}
 /* 3D wristband image */
 .lp-wristband-wrap {
   position: relative; z-index: 1;
-  width: 100%; max-width: 500px;
+  width: 100%; max-width: 900px;
   transform-style: preserve-3d;
   cursor: grab;
   filter:
-    drop-shadow(0 50px 100px rgba(163,230,53,0.3))
-    drop-shadow(0 20px 50px rgba(0,0,0,0.7))
-    drop-shadow(0 0 40px rgba(163,230,53,0.15));
+    drop-shadow(0 60px 120px rgba(163,230,53,0.35))
+    drop-shadow(0 25px 60px rgba(0,0,0,0.75))
+    drop-shadow(0 0 50px rgba(163,230,53,0.18));
   transition: filter 0.3s ease;
 }
 .lp-wristband-wrap:hover {
+  cursor: grabbing;
   filter:
-    drop-shadow(0 60px 120px rgba(163,230,53,0.4))
-    drop-shadow(0 30px 70px rgba(0,0,0,0.8))
-    drop-shadow(0 0 60px rgba(163,230,53,0.25));
+    drop-shadow(0 70px 140px rgba(163,230,53,0.5))
+    drop-shadow(0 35px 80px rgba(0,0,0,0.9))
+    drop-shadow(0 0 70px rgba(163,230,53,0.3));
 }
 .lp-wristband-img {
   width: 100%; height: auto; display: block;
   user-select: none; pointer-events: none;
-  /* subtle shine on the wristband */
-  filter: contrast(1.08) saturate(1.1);
+  filter: contrast(1.1) saturate(1.15);
 }
 /* ambient glow behind the card */
 .lp-ticket-glow {
@@ -1284,7 +1270,7 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
   .gio-photo { height: 400px; }
   .gio-photo-badge { right: 0; bottom: 1rem; }
 
-  .sec-contact { grid-template-columns: 1fr; gap: 2rem; }
+  .sec-contact { grid-template-columns: 220px 1fr; gap: 2rem; }
   .sec-header { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
   .gio-benefits { grid-template-columns: 1fr 1fr; }
 }
@@ -1383,13 +1369,14 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
   /* ── Life Pass ── */
   .sec-lifepass { padding: 3rem 1.1rem; gap: 2.5rem; }
   .lp-text h2 { font-size: clamp(1.9rem, 8vw, 2.6rem); }
-  .lp-ticket-wrap { width: 100%; max-width: 280px; }
+  .lp-ticket-wrap { width: 100%; max-width: 380px; }
+  .lp-wristband-wrap { max-width: 560px; }
 
   /* ── Category section ── */
   .sec-categories { padding: 2.5rem 1.1rem 2rem; }
   .cat-header { margin-bottom: 1.5rem; }
   .cat-header h2 { font-size: clamp(1.45rem, 6vw, 1.8rem); }
-  .cat-header p { font-size: 0.9rem; }
+  .cat-header p { font-size: 0.72rem; white-space: nowrap; }
   .cat-grid { grid-template-columns: 1fr; gap: 0.8rem; }
   .cat-card { height: 235px; border-radius: 20px; }
   .cat-body { padding: 1.2rem 1.4rem; }
@@ -1413,9 +1400,9 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
     gap: 0.8rem;
   }
   .ev-card {
-    flex: 0 0 58vw;
-    height: 320px;
-    border-radius: 18px;
+    flex: 0 0 64vw;
+    height: 360px;
+    border-radius: 20px;
     scroll-snap-align: start;
   }
 
@@ -1449,11 +1436,10 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
   /* ── Contact section ── */
   .sec-contact {
     padding: 2.5rem 1.1rem 2rem;
-    clip-path: none; /* disable diagonal cut on mobile */
+    clip-path: none;
     grid-template-columns: 1fr;
   }
-  .contact-avatar { width: 70px; height: 70px; font-size: 0.88rem; border-radius: 20px; }
-  .contact-bubbles span { font-size: 0.78rem; padding: 0.5rem 0.85rem; }
+  .contact-photo-wrap { max-width: 200px; margin: 0 auto; aspect-ratio: 3/4; }
   .contact-text h2 { font-size: clamp(1.35rem, 5.5vw, 1.75rem); }
   .contact-text > p { font-size: 0.9rem; }
   .contact-buttons { flex-direction: column; gap: 0.6rem; }
@@ -1538,7 +1524,7 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
   .hs-item p { font-size: 0.58rem; }
   .cat-card { height: 210px; }
   .cat-body h3 { font-size: 1.2rem; }
-  .ev-card { flex: 0 0 60vw; height: 300px; }
+  .ev-card { flex: 0 0 66vw; height: 340px; }
   .gio-photo { height: 250px; }
   .gio-benefits { grid-template-columns: 1fr; }
 }

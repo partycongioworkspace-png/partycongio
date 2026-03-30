@@ -1,17 +1,18 @@
 // Badge config — usato in admin, landing e modal
 export const BADGE_CONFIG = {
-  'HYPE':        { icon: '🔥', label: 'Hype del Momento',   color: 'fuchsia' },
-  'TOP PICK':    { icon: '💎', label: 'Top Selection',       color: 'violet'  },
-  'CONSIGLIATO': { icon: '⭐', label: 'Consigliato da Gio',  color: 'lime'    },
-  'PROMO':       { icon: '🎯', label: 'Promo',               color: 'default' },
-  'SOLD OUT':    { icon: '🚫', label: 'Sold Out',            color: 'red'     },
+  'HYPE':          { icon: '🔥', label: 'Hype del Momento',   color: 'fuchsia' },
+  'TOP PICK':      { icon: '💎', label: 'Top Selection',       color: 'violet'  },
+  'CONSIGLIATO':   { icon: '⭐', label: 'Consigliato da Gio',  color: 'lime'    },
+  'PROMO':         { icon: '🎯', label: 'Promo',               color: 'default' },
+  'SPECIAL GUEST': { icon: '🎤', label: 'Special Guest',       color: 'gold'    },
+  'SOLD OUT':      { icon: '🚫', label: 'Sold Out',            color: 'red'     },
 }
 
 export const BADGE_SECTIONS = [
-  { badge: 'HYPE',        icon: '🔥', title: 'Hype del Momento',  dark: true  },
-  { badge: 'TOP PICK',    icon: '💎', title: 'Top Selection',      dark: false },
-  { badge: 'CONSIGLIATO', icon: '⭐', title: 'Consigliati da Gio', dark: false },
-  { badge: 'PROMO',       icon: '🎯', title: 'In Promo',           dark: false },
+  { badge: 'HYPE',          icon: '🔥', title: 'Hype del Momento',  dark: true  },
+  { badge: 'TOP PICK',      icon: '💎', title: 'Top Selection',      dark: false },
+  { badge: 'PROMO',         icon: '🎯', title: 'In Promo',           dark: false },
+  { badge: 'SPECIAL GUEST', icon: '🎤', title: 'Special Guest',      dark: true  },
 ]
 
 export const siteConfig = {

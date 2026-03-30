@@ -79,8 +79,8 @@ function LifePassWristband() {
   const cardRef = useRef(null)
   const mouseX  = useMotionValue(0)
   const mouseY  = useMotionValue(0)
-  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [16, -16]), { stiffness: 240, damping: 26 })
-  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-16, 16]), { stiffness: 240, damping: 26 })
+  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [18, -18]), { stiffness: 200, damping: 22 })
+  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-18, 18]), { stiffness: 200, damping: 22 })
 
   function onMouseMove(e) {
     const r = cardRef.current.getBoundingClientRect()
@@ -92,25 +92,28 @@ function LifePassWristband() {
   return (
     <div className="lp-ticket-outer">
       <div className="lp-ticket-glow" />
-      <motion.div
-        ref={cardRef}
-        className="lp-wristband-wrap"
-        style={{ rotateX, rotateY }}
-        onMouseMove={onMouseMove}
-        onMouseLeave={onMouseLeave}
-        initial={{ opacity: 0, y: 60, rotate: -6 }}
-        whileInView={{ opacity: 1, y: 0, rotate: -6 }}
-        viewport={{ once: true, margin: '-80px' }}
-        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-        whileHover={{ scale: 1.05 }}
-      >
-        <img
-          src="/life-pass-wristband.png"
-          alt="Life Pass Wristband — Party con Gio Zante 2026"
-          className="lp-wristband-img"
-          draggable={false}
-        />
-      </motion.div>
+      {/* floating wrapper — CSS keyframe handles levitate, Framer handles 3D tilt */}
+      <div className="lp-float-wrap">
+        <motion.div
+          ref={cardRef}
+          className="lp-wristband-wrap"
+          style={{ rotateX, rotateY }}
+          onMouseMove={onMouseMove}
+          onMouseLeave={onMouseLeave}
+          initial={{ opacity: 0, y: 80, rotate: -8 }}
+          whileInView={{ opacity: 1, y: 0, rotate: -8 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+          whileHover={{ scale: 1.07 }}
+        >
+          <img
+            src="/life-pass-wristband.png"
+            alt="Life Pass Wristband — Party con Gio Zante 2026"
+            className="lp-wristband-img"
+            draggable={false}
+          />
+        </motion.div>
+      </div>
     </div>
   )
 }
@@ -130,9 +133,9 @@ function EventCard({ ev }) {
     >
       <div className="ev-thumb">
         {ev.imageId
-          ? <img src={cloudinaryUrl(ev.imageId, 'w_500,h_680,c_fill,g_auto,q_auto:best,f_auto')} alt={ev.title} />
+          ? <img src={cloudinaryUrl(ev.imageId, 'w_600,h_800,c_fill,g_auto,q_auto:best,f_auto')} alt={ev.title} />
           : ev.imageUrl
-            ? <img src={cloudinaryFetch(ev.imageUrl, 'w_500,h_680,c_fill,g_auto,q_auto:best,f_auto')} alt={ev.title} />
+            ? <img src={cloudinaryFetch(ev.imageUrl, 'w_600,h_800,c_fill,g_auto,q_auto:best,f_auto')} alt={ev.title} />
             : <div className="ev-thumb-gradient" />
         }
         {ev.badge && (
@@ -159,6 +162,21 @@ function EventCard({ ev }) {
 /* ─── MAIN ───────────────────────────────────── */
 const EMPTY_CONTACT = { name: '', email: '', phone: '', message: '' }
 
+/* ─── Date helpers for chronological sort ────── */
+const MONTHS_IT = {
+  gennaio:0, febbraio:1, marzo:2, aprile:3, maggio:4, giugno:5,
+  luglio:6, agosto:7, settembre:8, ottobre:9, novembre:10, dicembre:11,
+}
+function parseFirstDate(ev) {
+  const str = Array.isArray(ev.dates) ? ev.dates[0]?.date : null
+  if (!str) return new Date(9999, 0, 1)
+  const p = str.toLowerCase().trim().split(/\s+/)
+  return new Date(parseInt(p[2]) || 2026, MONTHS_IT[p[1]] ?? 0, parseInt(p[0]) || 1)
+}
+function chronoSort(arr) {
+  return [...arr].sort((a, b) => parseFirstDate(a) - parseFirstDate(b))
+}
+
 function ZanteLanding() {
   const [modalOpen, setModalOpen]       = useState(false)
   const [modalFilter, setModalFilter]   = useState('tutti')
@@ -167,8 +185,8 @@ function ZanteLanding() {
   const [scrolled, setScrolled]         = useState(false)
 
   const { events, loading: evLoading } = useEvents()
-  const soldOutEvents = events.filter((e) => e.soldOutRisk)
-  const allVisible    = events.slice(0, 8)
+  const soldOutEvents = chronoSort(events.filter((e) => e.soldOutRisk))
+  const allVisible    = chronoSort(events)
 
   /* Navbar transparency on scroll */
   useEffect(() => {
@@ -334,7 +352,7 @@ function ZanteLanding() {
         <div className="cat-header">
           <p className="label dark">Scegli la tua esperienza</p>
           <h2>Ogni giorno un party diverso</h2>
-          <p>Beach, boat, night e pool party. Gio seleziona solo il top per te.</p>
+          <p>Beach, boat, night, pool party e special guest. Gio seleziona solo il top per te.</p>
         </div>
         <div className="cat-grid">
           {CATEGORY_CARDS.map((cat) => (
@@ -412,13 +430,12 @@ function ZanteLanding() {
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
-          <p className="label">🎁 Solo per chi mi contatta prima</p>
+          <p className="label">🎁 SOLO PER CHI ACQUISTA ALMENO UN EVENTO</p>
           <h2>LIFE PASS<br />IN OMAGGIO</h2>
-          <p>Solo per chi acquista almeno un evento — contattami per sapere come ottenere il tuo Life Pass.</p>
           <ul className="lp-perks">
-            <li>✅ Ingresso gratuito alla serata di benvenuto</li>
-            <li>✅ Posto riservato con il gruppo Gio</li>
-            <li>✅ Zero fila, zero stress</li>
+            <li>✅ 1 ingresso incluso Beach Party</li>
+            <li>✅ Sconti e Convenzioni</li>
+            <li>✅ Assistenza h24</li>
           </ul>
           <motion.a
             href="https://wa.me/393289466213?text=Ciao Gio! Voglio il mio Life Pass omaggio 🎟"
@@ -475,7 +492,7 @@ function ZanteLanding() {
 
       {/* ══ SEZIONI BADGE ════════════════════════════ */}
       {BADGE_SECTIONS.map(({ badge, icon, title, dark }) => {
-        const badgeEvents = events.filter((e) => e.badge === badge)
+        const badgeEvents = chronoSort(events.filter((e) => e.badge === badge))
         if (badgeEvents.length === 0) return null
         return (
           <Section key={badge} className={`sec sec-badge-row${dark ? ' sec-dark' : ''}`}>
@@ -539,18 +556,48 @@ function ZanteLanding() {
         </Section>
       )}
 
+      {/* ══ PROMO PACK ═══════════════════════════════ */}
+      <Section className="sec-promo-pack">
+        <div className="pp-inner">
+          <div className="pp-text">
+            <span className="pp-badge">🎯 SUMMER PROMO</span>
+            <h2>4 FESTE.<br />UN SOLO PREZZO.</h2>
+            <div className="pp-price-row">
+              <span className="pp-amount-big">€65</span>
+              <span className="pp-old-price">€105</span>
+            </div>
+            <p>Pirate Ship con <strong>Open Bar</strong>, Paradiso Sunset, La Dolce Vita e Beach Party — drink inclusi + Life Pass braccialetto sconti. Solo su WhatsApp.</p>
+            <motion.a
+              href="https://wa.me/393289466213?text=Ciao Gio! Voglio il Summer Promo Pack da 65€ 🎉"
+              target="_blank"
+              rel="noreferrer"
+              className="btn-lime pp-cta"
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              💬 VOGLIO IL PROMO PACK
+            </motion.a>
+          </div>
+          <div className="pp-flyer">
+            <img
+              src="https://res.cloudinary.com/djb2nkpez/image/upload/w_560,c_limit,q_auto:best,f_auto/PHOTO-2026-03-30-17-55-35_rqajxv"
+              alt="Summer Promo Pack — 4 feste €65"
+              className="pp-flyer-img"
+            />
+          </div>
+        </div>
+      </Section>
+
       {/* ══ CONTATTI ═════════════════════════════════ */}
       <Section id="contatti" className="sec sec-contact">
-        <div className="contact-card">
-          <div className="contact-avatar">GIO</div>
-          <div className="contact-bubbles">
-            <span>Scrivimi prima di partire</span>
-            <span>Ti aspetto a Laganas 🌊</span>
-          </div>
+        <div className="contact-photo-wrap">
+          {/* slot foto — sostituisci /gio-contact.jpg con la tua foto */}
+          <img src="/gio-contact.jpg" alt="Gio" className="contact-photo" onError={(e) => { e.currentTarget.style.display='none' }} />
+          <div className="contact-photo-placeholder">GIO</div>
         </div>
         <div className="contact-text">
           <p className="label">Scrivimi direttamente</p>
-          <h2>Sono qui per te,<br />prima e durante Zante</h2>
+          <h2>Scrivimi prima<br />di partire.<br />Ti aspetto a Laganas 🌊</h2>
           <p>Rispondo personalmente su WhatsApp, Instagram e TikTok. Nessun bot, solo io — prima che tu parta e ogni sera sull&apos;isola.</p>
           <div className="contact-buttons">
             <motion.a className="btn-lime" href="https://wa.me/393289466213" target="_blank" rel="noreferrer" whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>💬 SCRIVIMI SU WHATSAPP</motion.a>
@@ -586,49 +633,6 @@ function ZanteLanding() {
               <p>{item.answer}</p>
             </details>
           ))}
-        </div>
-      </Section>
-
-      {/* ══ PROMO PACK ═══════════════════════════════ */}
-      <Section className="sec-promo-pack">
-        <div className="pp-badge-row">
-          <span className="pp-badge">🎯 OFFERTA ESCLUSIVA</span>
-        </div>
-        <div className="pp-inner">
-          <div className="pp-text">
-            <p className="label dark">Convenienza assicurata</p>
-            <h2>4 FESTE.<br />UN SOLO PREZZO.</h2>
-            <p>Con soli <strong className="pp-price-inline">65€</strong> prenoti 4 eventi scelti da me. Beach, boat, night e pool party — tutto incluso, zero sorprese. Meno di un ingresso singolo in discoteca a testa.</p>
-            <motion.a
-              href="https://wa.me/393289466213?text=Ciao Gio! Voglio il Promo Pack da 65€ 🎉"
-              target="_blank"
-              rel="noreferrer"
-              className="btn-lime pp-cta"
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.97 }}
-            >
-              💬 VOGLIO IL PROMO PACK
-            </motion.a>
-          </div>
-          <div className="pp-card">
-            <div className="pp-card-header">
-              <span className="pp-card-label">PROMO PACK</span>
-              <span className="pp-card-tag">BEST VALUE</span>
-            </div>
-            <div className="pp-price-block">
-              <span className="pp-currency">€</span>
-              <span className="pp-amount">65</span>
-              <span className="pp-per">/ 4 eventi</span>
-            </div>
-            <div className="pp-events-list">
-              <div className="pp-event-item"><span>🏖</span><span>Beach Party</span></div>
-              <div className="pp-event-item"><span>⛵</span><span>Boat Party</span></div>
-              <div className="pp-event-item"><span>🌙</span><span>Night Club</span></div>
-              <div className="pp-event-item"><span>💦</span><span>Pool Party</span></div>
-            </div>
-            <div className="pp-divider" />
-            <p className="pp-card-note">Disponibilità limitata · Solo su WhatsApp</p>
-          </div>
         </div>
       </Section>
 

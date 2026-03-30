@@ -19,21 +19,23 @@ function parseItalianDate(str) {
 }
 
 const FILTERS = [
-  { key: 'tutti',        label: 'Tutti',           icon: '🎉' },
-  { key: 'HYPE',         label: 'Hype',            icon: '🔥' },
-  { key: 'TOP PICK',     label: 'Top Pick',        icon: '💎' },
-  { key: 'CONSIGLIATO',  label: 'Consigliato',     icon: '⭐' },
-  { key: 'PROMO',        label: 'Promo',           icon: '🎯' },
-  { key: 'SOLD OUT',     label: 'Sold Out',        icon: '🚫' },
-  { key: 'soldout-risk', label: 'Quasi Esaurito',  icon: '🚨' },
+  { key: 'tutti',          label: 'Tutti',           icon: '🎉' },
+  { key: 'HYPE',           label: 'Hype',            icon: '🔥' },
+  { key: 'TOP PICK',       label: 'Top Pick',        icon: '💎' },
+  { key: 'CONSIGLIATO',    label: 'Consigliato',     icon: '⭐' },
+  { key: 'PROMO',          label: 'Promo',           icon: '🎯' },
+  { key: 'SPECIAL GUEST',  label: 'Special Guest',   icon: '🎤' },
+  { key: 'SOLD OUT',       label: 'Sold Out',        icon: '🚫' },
+  { key: 'soldout-risk',   label: 'Quasi Esaurito',  icon: '🚨' },
 ]
 
 const BADGE_COLORS = {
-  'HYPE':        'badge-hype',
-  'TOP PICK':    'badge-top-pick',
-  'CONSIGLIATO': 'badge-consigliato',
-  'PROMO':       'badge-promo',
-  'SOLD OUT':    'badge-sold-out',
+  'HYPE':          'badge-hype',
+  'TOP PICK':      'badge-top-pick',
+  'CONSIGLIATO':   'badge-consigliato',
+  'PROMO':         'badge-promo',
+  'SPECIAL GUEST': 'badge-special-guest',
+  'SOLD OUT':      'badge-sold-out',
 }
 
 function EventsModal({ open, onClose, events = [], initialFilter = 'tutti' }) {
