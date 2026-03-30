@@ -90,7 +90,7 @@ function EventsModal({ open, onClose, events = [], initialFilter = 'tutti' }) {
         <div className="modal-head">
           <div>
             <p className="modal-season">🌴 Zante · Estate 2026</p>
-            <h3>Calendario Eventi</h3>
+            <h3>Calendario Eventi da non perdere</h3>
           </div>
           <button type="button" className="modal-close" onClick={onClose} aria-label="Chiudi">✕</button>
         </div>
@@ -166,6 +166,9 @@ function EventsModal({ open, onClose, events = [], initialFilter = 'tutti' }) {
                       )}
                       {ev.soldOutRisk && (
                         <p className="modal-ev-risk-label">🚨 Quasi esaurito</p>
+                      )}
+                      {ev.drinkIncluso && (
+                        <span className="modal-ev-drink-badge">🍹 drink incluso</span>
                       )}
 
                       <div className="modal-ev-dates">

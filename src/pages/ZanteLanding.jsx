@@ -30,6 +30,7 @@ const CATEGORY_CARDS = [
     title: 'Beach Party',
     subtitle: 'Spiaggia, sole e vibes estive',
     icon: '🏖',
+    color: '#f59e0b',
     img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=900&q=85',
   },
   {
@@ -37,6 +38,7 @@ const CATEGORY_CARDS = [
     title: 'Boat Party',
     subtitle: 'Musica sul mare aperto',
     icon: '⛵',
+    color: '#0ea5e9',
     img: 'https://images.unsplash.com/photo-1559049977-56e0e22a4a48?w=900&q=85',
   },
   {
@@ -44,6 +46,7 @@ const CATEGORY_CARDS = [
     title: 'Night Club',
     subtitle: 'I club più hot di Laganas',
     icon: '🌙',
+    color: '#8b5cf6',
     img: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=900&q=85',
   },
   {
@@ -51,7 +54,16 @@ const CATEGORY_CARDS = [
     title: 'Pool Party',
     subtitle: 'Piscina, cocktail e DJ set',
     icon: '💦',
+    color: '#06b6d4',
     img: 'https://images.unsplash.com/photo-1622313762347-3c09fe5f2719?w=900&q=85',
+  },
+  {
+    id: 'special',
+    title: 'Special Guest',
+    subtitle: 'Artisti ospiti e serate esclusive',
+    icon: '🎤',
+    color: '#ffd700',
+    img: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=900&q=85',
   },
 ]
 
@@ -71,6 +83,21 @@ function Section({ children, className = '', id, style }) {
     >
       {children}
     </motion.section>
+  )
+}
+
+/* ─── ScrollRow with arrow buttons ──────────── */
+function ScrollRowArrows({ children, className = '', autoScroll = false }) {
+  const ref = useRef(null)
+  function scroll(dir) {
+    ref.current?.scrollBy({ left: dir * 290, behavior: 'smooth' })
+  }
+  return (
+    <div className={`sra-wrap ${className}${autoScroll ? ' sra-auto' : ''}`}>
+      <button className="sra-btn sra-prev" onClick={() => scroll(-1)} aria-label="Precedente">‹</button>
+      <div className="scroll-row sra-inner" ref={ref}>{children}</div>
+      <button className="sra-btn sra-next" onClick={() => scroll(1)} aria-label="Successivo">›</button>
+    </div>
   )
 }
 
@@ -144,6 +171,7 @@ function EventCard({ ev }) {
           </span>
         )}
         {ev.soldOutRisk && <span className="ev-risk-chip">🚨</span>}
+        {ev.drinkIncluso && <span className="ev-drink-chip">🍹 drink incluso</span>}
       </div>
       <div className="ev-body">
         <strong>{ev.title}</strong>
@@ -183,6 +211,7 @@ function ZanteLanding() {
   const [contact, setContact]           = useState(EMPTY_CONTACT)
   const [contactState, setContactState] = useState('idle')
   const [scrolled, setScrolled]         = useState(false)
+  const [activeCat, setActiveCat]       = useState(null)
 
   const { events, loading: evLoading } = useEvents()
   const soldOutEvents = chronoSort(events.filter((e) => e.soldOutRisk))
@@ -352,29 +381,65 @@ function ZanteLanding() {
         <div className="cat-header">
           <p className="label dark">Scegli la tua esperienza</p>
           <h2>Ogni giorno un party diverso</h2>
-          <p>Beach, boat, night, pool party e special guest. Gio seleziona solo il top per te.</p>
+          <p className="cat-header-sub">Beach · Boat · Night · Pool · Special Guest</p>
         </div>
         <div className="cat-grid">
-          {CATEGORY_CARDS.map((cat) => (
-            <motion.button
-              key={cat.id}
-              className="cat-card"
-              style={{ backgroundImage: `url('${cat.img}')` }}
-              onClick={() => openModal('tutti')}
-              whileHover={{ scale: 1.025 }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ type: 'spring', stiffness: 260, damping: 22 }}
-            >
-              <div className="cat-overlay" />
-              <div className="cat-body">
-                <span className="cat-icon">{cat.icon}</span>
-                <h3>{cat.title}</h3>
-                <p className="cat-subtitle">{cat.subtitle}</p>
-                <span className="cat-cta-pill">Scopri eventi →</span>
-              </div>
-            </motion.button>
-          ))}
+          {CATEGORY_CARDS.map((cat) => {
+            const isActive = activeCat === cat.id
+            return (
+              <motion.button
+                key={cat.id}
+                className={`cat-card${isActive ? ' cat-active' : ''}`}
+                style={{
+                  backgroundImage: `url('${cat.img}')`,
+                  '--cat-color': cat.color,
+                }}
+                onClick={() => setActiveCat(isActive ? null : cat.id)}
+                whileHover={{ scale: 1.025 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: 'spring', stiffness: 260, damping: 22 }}
+              >
+                <div className="cat-overlay" />
+                <div className="cat-body">
+                  <span className="cat-icon">{cat.icon}</span>
+                  <h3>{cat.title}</h3>
+                  <p className="cat-subtitle">{cat.subtitle}</p>
+                  <span className="cat-cta-pill" style={{ background: cat.color, color: '#07050f' }}>
+                    {isActive ? 'Chiudi ✕' : 'Scopri eventi →'}
+                  </span>
+                </div>
+              </motion.button>
+            )
+          })}
         </div>
+
+        {/* ── Filtered events for selected category ── */}
+        {activeCat && (() => {
+          const catEvs = chronoSort(events.filter((e) => e.category === activeCat))
+          const activeCatData = CATEGORY_CARDS.find((c) => c.id === activeCat)
+          return catEvs.length > 0 ? (
+            <motion.div
+              className="cat-ev-row"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+            >
+              <p className="cat-ev-row-label" style={{ color: activeCatData?.color }}>
+                {activeCatData?.icon} {activeCatData?.title} — {catEvs.length} event{catEvs.length > 1 ? 'i' : 'o'}
+              </p>
+              <ScrollRowArrows>
+                {catEvs.map((ev) => <EventCard key={ev.id} ev={ev} />)}
+              </ScrollRowArrows>
+            </motion.div>
+          ) : (
+            <motion.p
+              className="cat-ev-empty"
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            >
+              Nessun evento disponibile per questa categoria al momento. Torna presto 🎉
+            </motion.p>
+          )
+        })()}
       </Section>
 
       {/* ══ GIO ══════════════════════════════════════ */}
@@ -433,7 +498,7 @@ function ZanteLanding() {
           <p className="label">🎁 SOLO PER CHI ACQUISTA ALMENO UN EVENTO</p>
           <h2>LIFE PASS<br />IN OMAGGIO</h2>
           <ul className="lp-perks">
-            <li>✅ 1 ingresso incluso Beach Party</li>
+            <li>✅ Ingresso Beach Party incluso</li>
             <li>✅ Sconti e Convenzioni</li>
             <li>✅ Assistenza h24</li>
           </ul>
@@ -450,7 +515,9 @@ function ZanteLanding() {
           <p className="lp-note">+9.000 persone lo hanno già ricevuto nel 2025</p>
         </motion.div>
 
-        <LifePassWristband />
+        <div className="lp-float-wrap">
+          <LifePassWristband />
+        </div>
       </section>
 
       {/* ══ TUTTI GLI EVENTI ═════════════════════════ */}
@@ -476,9 +543,9 @@ function ZanteLanding() {
           <p className="ev-loading">Presto disponibili. Stay tuned! 🎉</p>
         ) : (
           <>
-            <div className="scroll-row">
+            <ScrollRowArrows>
               {allVisible.slice(0, 4).map((ev) => <EventCard key={ev.id} ev={ev} />)}
-            </div>
+            </ScrollRowArrows>
             {allVisible.length > 4 && (
               <div className="sec-more-cta">
                 <motion.button type="button" className="btn-lime" onClick={() => openModal('tutti')} whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
@@ -494,6 +561,7 @@ function ZanteLanding() {
       {BADGE_SECTIONS.map(({ badge, icon, title, dark }) => {
         const badgeEvents = chronoSort(events.filter((e) => e.badge === badge))
         if (badgeEvents.length === 0) return null
+        const isHype = badge === 'HYPE'
         return (
           <Section key={badge} className={`sec sec-badge-row${dark ? ' sec-dark' : ''}`}>
             <div className="sec-header">
@@ -511,10 +579,20 @@ function ZanteLanding() {
                 Vedi tutti →
               </motion.button>
             </div>
-            <div className="scroll-row">
-              {badgeEvents.slice(0, 4).map((ev) => <EventCard key={ev.id} ev={ev} />)}
-            </div>
-            {badgeEvents.length > 4 && (
+            {isHype ? (
+              <div className="hype-marquee-wrap">
+                <div className="hype-marquee-track">
+                  {[...badgeEvents, ...badgeEvents].map((ev, i) => (
+                    <EventCard key={`${ev.id}-${i}`} ev={ev} />
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <ScrollRowArrows>
+                {badgeEvents.slice(0, 4).map((ev) => <EventCard key={ev.id} ev={ev} />)}
+              </ScrollRowArrows>
+            )}
+            {!isHype && badgeEvents.length > 4 && (
               <div className="sec-more-cta">
                 <motion.button type="button" className={dark ? 'btn-white' : 'btn-lime'} onClick={() => openModal(badge)} whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
                   🎉 SCOPRI TUTTI ({badgeEvents.length})
@@ -543,9 +621,9 @@ function ZanteLanding() {
               Vedi tutti →
             </motion.button>
           </div>
-          <div className="scroll-row">
+          <ScrollRowArrows>
             {soldOutEvents.slice(0, 4).map((ev) => <EventCard key={ev.id} ev={ev} />)}
-          </div>
+          </ScrollRowArrows>
           {soldOutEvents.length > 4 && (
             <div className="sec-more-cta">
               <motion.button type="button" className="btn-white" onClick={() => openModal('soldout-risk')} whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
@@ -597,7 +675,7 @@ function ZanteLanding() {
         </div>
         <div className="contact-text">
           <p className="label">Scrivimi direttamente</p>
-          <h2>Scrivimi prima<br />di partire.<br />Ti aspetto a Laganas 🌊</h2>
+          <h2>Scrivimi prima<br />di partire.</h2>
           <p>Rispondo personalmente su WhatsApp, Instagram e TikTok. Nessun bot, solo io — prima che tu parta e ogni sera sull&apos;isola.</p>
           <div className="contact-buttons">
             <motion.a className="btn-lime" href="https://wa.me/393289466213" target="_blank" rel="noreferrer" whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>💬 SCRIVIMI SU WHATSAPP</motion.a>
@@ -643,20 +721,18 @@ function ZanteLanding() {
         </span>
         <p className="footer-claim">{siteConfig.claim}</p>
         <div className="footer-socials">
-          <a href="https://wa.me/393289466213"               target="_blank" rel="noreferrer">💬 WhatsApp</a>
-          <a href="https://www.instagram.com/partycongio?igsh=MW9xdXJvYXNjYzlvNQ==" target="_blank" rel="noreferrer">📸 Instagram</a>
-          <a href="https://www.tiktok.com/@giorgiacozzoli_?_r=1&_t=ZN-94vo8BV3mFy" target="_blank" rel="noreferrer">🎵 TikTok</a>
-        </div>
-        <a
-          href="https://wa.me/393289466213"
-          className="footer-wa-cta"
-          target="_blank"
-          rel="noreferrer"
-        >
-          💬 SCRIVIMI SU WHATSAPP
-        </a>
-        <div className="footer-partners">
-          {partners.map((p) => <span key={p}>{p}</span>)}
+          <a href="https://wa.me/393289466213" target="_blank" rel="noreferrer" className="fsoc-wa">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.555 4.122 1.526 5.855L.057 23.882l6.188-1.438A11.934 11.934 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.808 9.808 0 01-5.032-1.386l-.36-.214-3.733.867.936-3.424-.235-.373A9.818 9.818 0 012.182 12c0-5.413 4.405-9.818 9.818-9.818 5.413 0 9.818 4.405 9.818 9.818 0 5.413-4.405 9.818-9.818 9.818z"/></svg>
+            WhatsApp
+          </a>
+          <a href="https://www.instagram.com/partycongio?igsh=MW9xdXJvYXNjYzlvNQ==" target="_blank" rel="noreferrer" className="fsoc-ig">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            Instagram
+          </a>
+          <a href="https://www.tiktok.com/@giorgiacozzoli_?_r=1&_t=ZN-94vo8BV3mFy" target="_blank" rel="noreferrer" className="fsoc-tt">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"/></svg>
+            TikTok
+          </a>
         </div>
         <p className="footer-copy">© 2026 Party con Gio · Zante Edition · Tutti i diritti riservati</p>
       </footer>

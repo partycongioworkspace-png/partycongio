@@ -24,6 +24,7 @@ const EMPTY_EVENT = {
   imageId: '',
   imageUrl: '',
   soldOutRisk: false,
+  drinkIncluso: false,
 }
 
 const MONTHS_EN_IT = {
@@ -270,6 +271,7 @@ function Admin() {
       imageId: ev.imageId || '',
       imageUrl: ev.imageUrl || '',
       soldOutRisk: ev.soldOutRisk || false,
+      drinkIncluso: ev.drinkIncluso || false,
     })
     setEditingId(ev.id)
     setFormError('')
@@ -320,6 +322,7 @@ function Admin() {
         imageId: form.imageId.trim(),
         imageUrl: form.imageUrl?.trim() || '',
         soldOutRisk: form.soldOutRisk,
+        drinkIncluso: form.drinkIncluso || false,
         updatedAt: serverTimestamp(),
       }
       if (editingId) {
@@ -594,6 +597,17 @@ service cloud.firestore {
                         onChange={(e) => setForm({ ...form, soldOutRisk: e.target.checked })}
                       />
                       🔥 Segnala come Sold Out Risk (appare nella sezione alert)
+                    </label>
+                  </div>
+
+                  <div className="adm-field adm-checkbox-field">
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={form.drinkIncluso || false}
+                        onChange={(e) => setForm({ ...form, drinkIncluso: e.target.checked })}
+                      />
+                      🍹 Drink incluso (appare come badge sulla card)
                     </label>
                   </div>
 
