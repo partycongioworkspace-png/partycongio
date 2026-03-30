@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { signOut } from 'firebase/auth'
 import {
   addDoc,
@@ -9,7 +9,7 @@ import {
   updateDoc,
 } from 'firebase/firestore'
 import { useNavigate } from 'react-router-dom'
-import { auth, cloudinaryUrl, db } from '../config/firebase'
+import { auth, cloudinaryUrl, cloudinaryFetch, db } from '../config/firebase'
 import { useEvents, useMessages } from '../hooks/useEvents'
 import './Admin.css'
 
@@ -22,7 +22,118 @@ const EMPTY_EVENT = {
   category: 'beach',
   description: '',
   imageId: '',
+  imageUrl: '',
   soldOutRisk: false,
+}
+
+const MONTHS_EN_IT = {
+  january: 'Gennaio', february: 'Febbraio', march: 'Marzo',
+  april: 'Aprile', may: 'Maggio', june: 'Giugno',
+  july: 'Luglio', august: 'Agosto', september: 'Settembre',
+  october: 'Ottobre', november: 'Novembre', december: 'Dicembre',
+}
+
+// CORS proxy fallback chain — tries each until one works
+const CORS_PROXIES = [
+  (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+  (u) => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+  (u) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+]
+
+async function fetchViaProxy(url, timeoutMs = 9000) {
+  for (const proxyFn of CORS_PROXIES) {
+    try {
+      const ctrl = new AbortController()
+      const tid = setTimeout(() => ctrl.abort(), timeoutMs)
+      const res = await fetch(proxyFn(url), { signal: ctrl.signal })
+      clearTimeout(tid)
+      if (!res.ok) continue
+      const text = await res.text()
+      // Basic sanity check — real HTML pages are at least a few KB
+      if (text && text.length > 300) return text
+    } catch { /* try next proxy */ }
+  }
+  return null
+}
+
+/** Extract OG / meta tags from raw HTML as fallback for Microlink */
+function extractMetaFromHtml(html) {
+  const doc = new DOMParser().parseFromString(html, 'text/html')
+  const get = (sel, attr = 'content') => doc.querySelector(sel)?.getAttribute(attr)?.trim() || ''
+  return {
+    title:       get('meta[property="og:title"]')       || get('meta[name="twitter:title"]')       || doc.title || '',
+    description: get('meta[property="og:description"]') || get('meta[name="description"]')         || '',
+    imageUrl:    get('meta[property="og:image"]')       || get('meta[name="twitter:image:src"]')   || '',
+  }
+}
+
+/**
+ * Extract event dates from raw HTML.
+ * Strategy 1: JSON-LD schema.org (most precise)
+ * Strategy 2: Regex on visible text (fallback for sites like getyourtickets.com)
+ */
+function extractDatesFromHtml(html, referralUrl) {
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(html, 'text/html')
+  const results = []
+
+  // ── Strategy 1: JSON-LD ──────────────────────────
+  doc.querySelectorAll('script[type="application/ld+json"]').forEach((script) => {
+    try {
+      const raw = JSON.parse(script.textContent)
+      const entries = Array.isArray(raw) ? raw.flat() : [raw]
+      entries.forEach((item) => {
+        // Handle nested @graph arrays (common in many CMS platforms)
+        const items = item['@graph'] ? item['@graph'] : [item]
+        items.forEach((entry) => {
+          const start = entry.startDate || entry.eventDate
+          if (!start) return
+          const d = new Date(start)
+          if (isNaN(d)) return
+          results.push({
+            date: d.toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' }),
+            time: d.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' }),
+            referral: referralUrl,
+          })
+        })
+      })
+    } catch { /* ignore malformed JSON-LD */ }
+  })
+  if (results.length > 0) return results
+
+  // ── Strategy 2: text regex ───────────────────────
+  // Works well for getyourtickets.com and similar sites where dates are
+  // rendered server-side as visible text
+  const bodyText = doc.body?.innerText || doc.body?.textContent || ''
+  const monthKeys = Object.keys(MONTHS_EN_IT)
+  const monthPattern = monthKeys.map((m) => m.charAt(0).toUpperCase() + m.slice(1)).join('|')
+
+  // Pattern: day number + month name, then within 150 chars a HH:MM time
+  const re = new RegExp(
+    `\\b(\\d{1,2})\\s+(${monthPattern})(?:\\s+\\d{4})?[\\s\\S]{0,150}?\\b(\\d{2}:\\d{2})`,
+    'gi'
+  )
+
+  const seen = new Set()
+  const yearGuess = new Date().getFullYear() + (new Date().getMonth() >= 10 ? 1 : 0)
+  let match
+  while ((match = re.exec(bodyText)) !== null && results.length < 20) {
+    const day   = match[1]
+    const month = match[2]
+    const time  = match[3]
+    // Skip obviously wrong times like 00:00 appearing in copyright / footer
+    if (time === '00:00') continue
+    const key = `${day}-${month.toLowerCase()}-${time}`
+    if (seen.has(key)) continue
+    seen.add(key)
+    const monthIt = MONTHS_EN_IT[month.toLowerCase()] || month
+    results.push({
+      date:     `${day} ${monthIt} ${yearGuess}`,
+      time,
+      referral: referralUrl,
+    })
+  }
+  return results
 }
 
 function formatTs(ts) {
@@ -36,6 +147,8 @@ function Admin() {
   const { events, loading: evLoading, error: evError } = useEvents()
   const { messages, loading: msgLoading } = useMessages()
 
+  const formBoxRef = useRef(null)
+
   const [tab, setTab] = useState('events')
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState(null)
@@ -43,10 +156,80 @@ function Admin() {
   const [saving, setSaving] = useState(false)
   const [formError, setFormError] = useState('')
   const [imgPreview, setImgPreview] = useState(null)
+  const [importUrl, setImportUrl] = useState('')
+  const [importState, setImportState] = useState('idle') // idle | loading | success | partial | error
+  const [importDatesCount, setImportDatesCount] = useState(0)
 
   useEffect(() => {
-    setImgPreview(form.imageId ? cloudinaryUrl(form.imageId) : null)
-  }, [form.imageId])
+    if (form.imageId) {
+      setImgPreview(cloudinaryUrl(form.imageId))
+    } else if (form.imageUrl) {
+      setImgPreview(form.imageUrl)
+    } else {
+      setImgPreview(null)
+    }
+  }, [form.imageId, form.imageUrl])
+
+  // Scroll to the top of the form box when it opens so the import section is always visible
+  useEffect(() => {
+    if (showForm && formBoxRef.current) {
+      setTimeout(() => {
+        formBoxRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 80)
+    }
+  }, [showForm])
+
+  async function handleImport() {
+    const url = importUrl.trim()
+    if (!url) return
+    setImportState('loading')
+    try {
+      // ── Step 1: fetch raw HTML via proxy chain + Microlink in parallel ──
+      const [mlRes, rawHtml] = await Promise.all([
+        fetch(`https://api.microlink.io/?url=${encodeURIComponent(url)}`)
+          .then((r) => r.json())
+          .catch(() => null),
+        fetchViaProxy(url),
+      ])
+
+      // ── Step 2: metadata — Microlink first, then OG tags from HTML ──────
+      let meta = { title: '', description: '', imageUrl: '' }
+
+      if (mlRes?.status === 'success') {
+        const d = mlRes.data
+        meta.title       = d.title       || ''
+        meta.description = d.description || ''
+        meta.imageUrl    = d.image?.url  || ''
+      }
+
+      // If Microlink didn't deliver, extract directly from HTML OG tags
+      if (rawHtml && (!meta.title || !meta.imageUrl)) {
+        const fromHtml = extractMetaFromHtml(rawHtml)
+        if (!meta.title)    meta.title       = fromHtml.title
+        if (!meta.description) meta.description = fromHtml.description
+        if (!meta.imageUrl) meta.imageUrl    = fromHtml.imageUrl
+      }
+
+      // ── Step 3: dates from raw HTML ──────────────────────────────────────
+      const parsedDates = rawHtml ? extractDatesFromHtml(rawHtml, url) : []
+
+      setForm((prev) => ({
+        ...prev,
+        ...(meta.title       ? { title:       meta.title }       : {}),
+        ...(meta.description ? { description: meta.description } : {}),
+        ...(meta.imageUrl    ? { imageUrl:    meta.imageUrl }    : {}),
+        dates: parsedDates.length > 0
+          ? parsedDates
+          : prev.dates.map((d, i) => i === 0 ? { ...d, referral: url } : d),
+      }))
+      setImportDatesCount(parsedDates.length)
+
+      const hasContent = meta.title || parsedDates.length > 0
+      setImportState(hasContent ? 'success' : 'partial')
+    } catch {
+      setImportState('error')
+    }
+  }
 
   async function handleLogout() {
     await signOut(auth)
@@ -57,6 +240,9 @@ function Admin() {
     setForm(EMPTY_EVENT)
     setEditingId(null)
     setFormError('')
+    setImportUrl('')
+    setImportState('idle')
+    setImportDatesCount(0)
     setShowForm(true)
   }
 
@@ -70,10 +256,14 @@ function Admin() {
       category: ev.category || 'beach',
       description: ev.description || '',
       imageId: ev.imageId || '',
+      imageUrl: ev.imageUrl || '',
       soldOutRisk: ev.soldOutRisk || false,
     })
     setEditingId(ev.id)
     setFormError('')
+    setImportUrl('')
+    setImportState('idle')
+    setImportDatesCount(0)
     setShowForm(true)
   }
 
@@ -82,6 +272,9 @@ function Admin() {
     setEditingId(null)
     setForm(EMPTY_EVENT)
     setFormError('')
+    setImportUrl('')
+    setImportState('idle')
+    setImportDatesCount(0)
   }
 
   function updateDate(idx, field, value) {
@@ -113,6 +306,7 @@ function Admin() {
         category: form.category,
         description: form.description.trim(),
         imageId: form.imageId.trim(),
+        imageUrl: form.imageUrl?.trim() || '',
         soldOutRisk: form.soldOutRisk,
         updatedAt: serverTimestamp(),
       }
@@ -199,10 +393,48 @@ service cloud.firestore {
             </div>
 
             {showForm && (
-              <div className="adm-form-box">
+              <div className="adm-form-box" ref={formBoxRef}>
                 <h2>{editingId ? '✏️ Modifica Evento' : '✨ Nuovo Evento'}</h2>
                 {formError && <p className="adm-form-error">{formError}</p>}
                 <form onSubmit={handleSubmit} className="adm-form">
+
+                  {/* ── IMPORT FROM URL ── */}
+                  <div className="adm-import-box">
+                    <label className="adm-import-label">
+                      ⚡ Importa automaticamente <span>— incolla il link della biglietteria e compilo io titolo, foto e date</span>
+                    </label>
+                    <div className="adm-import-row">
+                      <input
+                        type="url"
+                        className="adm-import-input"
+                        value={importUrl}
+                        onChange={(e) => { setImportUrl(e.target.value); setImportState('idle') }}
+                        placeholder="https://dice.fm/event/… oppure https://www.ticketone.it/…"
+                      />
+                      <button
+                        type="button"
+                        className="adm-import-btn"
+                        onClick={handleImport}
+                        disabled={importState === 'loading'}
+                      >
+                        {importState === 'loading' ? '⏳ Importo…' : '🔗 Importa'}
+                      </button>
+                    </div>
+                    {importState === 'success' && (
+                      <p className="adm-import-ok">
+                        ✅ Importato!
+                        {importDatesCount > 0
+                          ? ` ${importDatesCount} data${importDatesCount > 1 ? ' trovate' : ' trovata'} in automatico. Controlla e completa badge / categoria.`
+                          : ' Titolo, descrizione e immagine pronti. Aggiungi tu le date.'}
+                      </p>
+                    )}
+                    {importState === 'partial' && (
+                      <p className="adm-import-err">⚠️ Pagina letta ma pochi dati. Controlla e compila a mano.</p>
+                    )}
+                    {importState === 'error' && (
+                      <p className="adm-import-err">⚠️ Non riesco a leggere questa pagina. Compila i campi a mano.</p>
+                    )}
+                  </div>
 
                   {/* Titolo + Badge */}
                   <div className="adm-form-row">
@@ -240,13 +472,33 @@ service cloud.firestore {
                       </select>
                     </div>
                     <div className="adm-field">
-                      <label>Immagine (Cloudinary Public ID)</label>
-                      <input
-                        type="text"
-                        value={form.imageId}
-                        onChange={(e) => setForm({ ...form, imageId: e.target.value })}
-                        placeholder="es. events/laganas-main-stage"
-                      />
+                      <label>
+                        Immagine
+                        <span className="adm-field-hint"> — URL importata automaticamente, oppure Cloudinary Public ID</span>
+                      </label>
+                      {form.imageUrl && !form.imageId ? (
+                        <div className="adm-img-url-wrap">
+                          <input
+                            type="text"
+                            value={form.imageUrl}
+                            onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
+                            placeholder="URL immagine (auto-importata)"
+                          />
+                          <button
+                            type="button"
+                            className="adm-img-clear"
+                            onClick={() => setForm({ ...form, imageUrl: '' })}
+                            title="Rimuovi e usa Cloudinary ID"
+                          >✕</button>
+                        </div>
+                      ) : (
+                        <input
+                          type="text"
+                          value={form.imageId}
+                          onChange={(e) => setForm({ ...form, imageId: e.target.value })}
+                          placeholder="es. events/laganas-main-stage (Cloudinary Public ID)"
+                        />
+                      )}
                     </div>
                   </div>
 

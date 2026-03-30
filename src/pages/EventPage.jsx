@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { doc, getDoc } from 'firebase/firestore'
 import { Link, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { cloudinaryUrl, db } from '../config/firebase'
+import { cloudinaryUrl, cloudinaryFetch, db } from '../config/firebase'
 import { buildTrackedLink } from '../data/zanteData'
 import './EventPage.css'
 
@@ -88,10 +88,9 @@ function EventPage() {
       {/* ── Nav ── */}
       <nav className="ep-nav">
         <Link to="/" className="ep-nav-logo">
-          <img
-            src="https://res.cloudinary.com/djb2nkpez/image/upload/w_200,h_64,c_fit,f_auto,q_auto/1-removebg-preview_fddema"
-            alt="Party con Gio"
-          />
+          <span className="logo-text ep-logo-text">
+            <span className="logo-accent">PARTY</span><span className="logo-mid">CON</span><span className="logo-accent">GIO</span>
+          </span>
         </Link>
         <Link to="/" className="ep-nav-back">← Tutti gli eventi</Link>
       </nav>
@@ -101,6 +100,12 @@ function EventPage() {
         {event.imageId ? (
           <img
             src={cloudinaryUrl(event.imageId, 'w_1200,h_500,c_fill,q_auto,f_auto,g_center')}
+            alt={event.title}
+            className="ep-hero-img"
+          />
+        ) : event.imageUrl ? (
+          <img
+            src={cloudinaryFetch(event.imageUrl, 'w_1200,h_500,c_fill,q_auto,f_auto,g_center')}
             alt={event.title}
             className="ep-hero-img"
           />
@@ -195,11 +200,9 @@ function EventPage() {
         {/* ── Sidebar ── */}
         <motion.aside className="ep-aside" variants={FADE_UP}>
           <div className="ep-aside-card">
-            <img
-              src="https://res.cloudinary.com/djb2nkpez/image/upload/w_200,h_64,c_fit,f_auto,q_auto/1-removebg-preview_fddema"
-              alt="Party con Gio"
-              className="ep-aside-logo"
-            />
+            <span className="logo-text ep-aside-logo-text">
+              <span className="logo-accent">PARTY</span><span className="logo-mid">CON</span><span className="logo-accent">GIO</span>
+            </span>
             <h3>Hai domande su questo evento?</h3>
             <p>Scrivi a Gio direttamente. Risponde sempre.</p>
             <a

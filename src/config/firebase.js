@@ -25,3 +25,9 @@ export function cloudinaryUrl(publicId, opts = 'w_600,h_400,c_fill,q_auto,f_auto
   if (!publicId) return null
   return `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/image/upload/${opts}/${publicId}`
 }
+
+/** Optimise any external image URL through Cloudinary Fetch */
+export function cloudinaryFetch(externalUrl, opts = 'w_600,h_400,c_fill,q_auto,f_auto') {
+  if (!externalUrl) return null
+  return `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/image/fetch/${opts}/${encodeURIComponent(externalUrl)}`
+}

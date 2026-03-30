@@ -611,6 +611,113 @@
   white-space: pre-wrap;
 }
 
+/* ── URL IMPORT BOX ── */
+@keyframes adm-import-appear {
+  0%   { opacity: 0; transform: translateY(-8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.adm-import-box {
+  background: rgba(163, 230, 53, 0.07);
+  border: 1.5px solid rgba(163, 230, 53, 0.38);
+  border-radius: 14px;
+  padding: 1.25rem 1.4rem;
+  margin-bottom: 1.5rem;
+  animation: adm-import-appear 0.35s ease both;
+  scroll-margin-top: 1rem;
+}
+.adm-import-label {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--adm-fluo);
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.01em;
+}
+.adm-import-label span {
+  font-weight: 400;
+  color: var(--adm-muted);
+  font-size: 0.82rem;
+}
+.adm-import-row {
+  display: flex;
+  gap: 0.65rem;
+}
+.adm-import-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(163, 230, 53, 0.28);
+  border-radius: 10px;
+  color: var(--adm-white);
+  font-size: 0.88rem;
+  padding: 0.65rem 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.adm-import-input:focus {
+  border-color: var(--adm-fluo);
+}
+.adm-import-input::placeholder {
+  color: var(--adm-muted);
+  font-size: 0.82rem;
+}
+.adm-import-btn {
+  background: var(--adm-fluo);
+  color: #07050f;
+  border: none;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  padding: 0.65rem 1.3rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.2s, transform 0.15s;
+}
+.adm-import-btn:hover  { opacity: 0.88; }
+.adm-import-btn:active { transform: scale(0.96); }
+.adm-import-btn:disabled { opacity: 0.5; cursor: wait; }
+.adm-import-ok {
+  margin: 0.65rem 0 0;
+  font-size: 0.82rem;
+  color: var(--adm-fluo);
+  font-weight: 600;
+}
+.adm-import-err {
+  margin: 0.65rem 0 0;
+  font-size: 0.82rem;
+  color: #fb923c;
+  font-weight: 600;
+}
+
+/* hint under labels */
+.adm-field-hint {
+  font-weight: 400;
+  font-size: 0.78rem;
+  color: var(--adm-muted);
+  letter-spacing: 0;
+}
+
+/* imageUrl field wrapper */
+.adm-img-url-wrap {
+  display: flex;
+  gap: 0.5rem;
+}
+.adm-img-url-wrap input {
+  flex: 1;
+}
+.adm-img-clear {
+  background: rgba(248, 113, 113, 0.12);
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  border-radius: 8px;
+  color: var(--adm-red);
+  font-size: 0.85rem;
+  padding: 0 0.75rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.adm-img-clear:hover { background: rgba(248, 113, 113, 0.22); }
+
 /* ── RESPONSIVE ── */
 @media (max-width: 700px) {
   .adm-header { padding: 1rem 1.25rem; }
@@ -620,4 +727,6 @@
   .adm-events-grid { grid-template-columns: 1fr; }
   .adm-date-fields { grid-template-columns: 1fr 1fr; }
   .adm-date-link { grid-column: 1 / -1; }
+  .adm-import-row { flex-direction: column; }
+  .adm-import-btn { width: 100%; }
 }

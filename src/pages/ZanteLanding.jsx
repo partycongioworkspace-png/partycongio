@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
 import { Link } from 'react-router-dom'
-import { motion, useInView } from 'framer-motion'
+import { motion, useInView, useMotionValue, useTransform, useSpring } from 'framer-motion'
 import EventsModal from '../components/EventsModal'
-import { db, cloudinaryUrl } from '../config/firebase'
+import { db, cloudinaryUrl, cloudinaryFetch } from '../config/firebase'
 import { useEvents } from '../hooks/useEvents'
 import {
   BADGE_SECTIONS,
@@ -75,6 +74,78 @@ function Section({ children, className = '', id, style }) {
   )
 }
 
+/* ─── LifePassTicket ─────────────────────────── */
+function LifePassTicket() {
+  const cardRef = useRef(null)
+  const mouseX  = useMotionValue(0)
+  const mouseY  = useMotionValue(0)
+  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [13, -13]), { stiffness: 260, damping: 28 })
+  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-13, 13]), { stiffness: 260, damping: 28 })
+
+  function onMouseMove(e) {
+    const r = cardRef.current.getBoundingClientRect()
+    mouseX.set((e.clientX - r.left) / r.width  - 0.5)
+    mouseY.set((e.clientY - r.top)  / r.height - 0.5)
+  }
+  function onMouseLeave() { mouseX.set(0); mouseY.set(0) }
+
+  return (
+    <div style={{ perspective: '900px' }} className="lp-ticket-outer">
+      <motion.div
+        ref={cardRef}
+        className="lp-ticket-wrap"
+        style={{ rotateX, rotateY }}
+        onMouseMove={onMouseMove}
+        onMouseLeave={onMouseLeave}
+        initial={{ opacity: 0, y: 60 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-80px' }}
+        transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
+        whileHover={{ scale: 1.03 }}
+      >
+        <div className="lp-ticket-glow" />
+        <div className="lp-ticket">
+          <div className="lp-shimmer" />
+
+          {/* Header band */}
+          <div className="lp-ticket-header">
+            <span className="lp-th-brand">
+              <span className="logo-accent">PARTY</span>
+              <span style={{ color: 'rgba(7,5,15,0.65)' }}>CON</span>
+              <span className="logo-accent">GIO</span>
+            </span>
+            <span className="lp-th-year">ZANTE 2026</span>
+          </div>
+
+          {/* Body */}
+          <div className="lp-ticket-body">
+            <span className="lp-ticket-icon">🎟</span>
+            <h3 className="lp-ticket-name">LIFE PASS</h3>
+            <p className="lp-ticket-sub">INGRESSO OMAGGIO</p>
+            <div className="lp-ticket-badge">✦ ESCLUSIVO ✦</div>
+          </div>
+
+          {/* Perforated divider */}
+          <div className="lp-ticket-perf">
+            <div className="lp-perf-hole" />
+            <div className="lp-perf-line" />
+            <div className="lp-perf-hole" />
+          </div>
+
+          {/* Stub */}
+          <div className="lp-ticket-stub">
+            <div>
+              <span>LAGANAS · ZANTE</span>
+              <span>ESTATE 2026</span>
+            </div>
+            <span className="lp-admit">ADMIT ONE</span>
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  )
+}
+
 /* ─── EventCard ──────────────────────────────── */
 const MotionLink = motion(Link)
 
@@ -91,7 +162,9 @@ function EventCard({ ev }) {
       <div className="ev-thumb">
         {ev.imageId
           ? <img src={cloudinaryUrl(ev.imageId, 'w_460,h_320,c_fill,q_auto,f_auto')} alt={ev.title} />
-          : <div className="ev-thumb-gradient" />
+          : ev.imageUrl
+            ? <img src={cloudinaryFetch(ev.imageUrl, 'w_460,h_320,c_fill,q_auto,f_auto')} alt={ev.title} />
+            : <div className="ev-thumb-gradient" />
         }
         {ev.badge && (
           <span className={`ev-badge-chip ev-badge-${(ev.badge || '').toLowerCase().replace(/\s+/g, '-')}`}>
@@ -164,16 +237,14 @@ function ZanteLanding() {
       {/* ══ NAV ══════════════════════════════════════ */}
       <nav className={`navbar${scrolled ? ' navbar-scrolled' : ''}`}>
         <a href="/" className="navbar-logo">
-          <img
-            src="https://res.cloudinary.com/djb2nkpez/image/upload/w_280,h_90,c_fit,f_auto,q_auto/1-removebg-preview_fddema"
-            alt="Party con Gio"
-            className="navbar-logo-img"
-          />
+          <span className="logo-text">
+            <span className="logo-accent">PARTY</span><span className="logo-mid">CON</span><span className="logo-accent">GIO</span>
+          </span>
         </a>
         <div className="navbar-links">
-          <button type="button" onClick={() => openModal('tutti')}>🎉 Eventi</button>
-          <a href="#gio">Chi è Gio</a>
-          <a href="#contatti" className="navbar-cta">Prenota ora</a>
+          <button type="button" onClick={() => openModal('tutti')}>🎉 EVENTI</button>
+          <a href="#gio">CHI SONO</a>
+          <a href="#contatti" className="navbar-cta">PRENOTA ORA</a>
         </div>
       </nav>
 
@@ -211,11 +282,11 @@ function ZanteLanding() {
             Zante Edition · Estate 2026
           </motion.p>
           <motion.h1 variants={FADE_UP}>
-            PARTY A ZANTE.<br />NON RESTARE FUORI.
+            PARTY A ZANTE<br />CON GIO'
           </motion.h1>
           <motion.p className="hero-sub" variants={FADE_UP}>
             Ho selezionato per te i migliori beach, boat e night party dell&apos;isola.
-            Zero stress, zero sold out.
+            Zero stress, zero sold out — ci penso io.
           </motion.p>
           <motion.div className="hero-actions" variants={FADE_UP}>
             <motion.button
@@ -225,7 +296,7 @@ function ZanteLanding() {
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.97 }}
             >
-              🎉 Scopri gli eventi
+              🎉 SCOPRI GLI EVENTI
             </motion.button>
             <motion.a
               href="#gio"
@@ -233,7 +304,7 @@ function ZanteLanding() {
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.97 }}
             >
-              Chi è Gio
+              CHI SONO
             </motion.a>
           </motion.div>
         </motion.div>
@@ -258,7 +329,7 @@ function ZanteLanding() {
           </div>
           <div className="hcs-chip hcs-chip-crew">
             <span className="hcs-avatars"><i /><i /><i /></span>
-            +184 partiti con Gio
+            +9.000 partiti con Gio
           </div>
         </motion.div>
 
@@ -270,10 +341,10 @@ function ZanteLanding() {
           transition={{ duration: 0.7, delay: 0.85, ease: [0.22, 1, 0.36, 1] }}
         >
           {[
-            { val: '200+', label: 'Partecipanti 2025' },
-            { val: '15+',  label: 'Serate Estate 2026' },
-            { val: '4',    label: 'Tipi di Party' },
-            { val: '0',    label: 'Sold Out Sorpresa' },
+            { val: '+50K',  label: 'Partecipanti 2025' },
+            { val: '110',   label: 'Serate Estate 2026' },
+            { val: '5',     label: 'Tipi di Party' },
+            { val: '0',     label: 'Sold Out Sorpresa' },
           ].map((s, i, arr) => (
             <>
               <div className="hs-item" key={s.label}>
@@ -284,6 +355,39 @@ function ZanteLanding() {
             </>
           ))}
         </motion.div>
+      </section>
+
+      {/* ══ LIFE PASS ════════════════════════════════ */}
+      <section className="sec-lifepass">
+        <motion.div
+          className="lp-text"
+          initial={{ opacity: 0, x: -40 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <p className="label">🎁 Solo per chi mi contatta prima</p>
+          <h2>LIFE PASS<br />IN OMAGGIO</h2>
+          <p>Scrivimi su WhatsApp prima di partire e ti regalo l&apos;ingresso gratuito alla serata di benvenuto a Zante. Nessun costo, nessuna sorpresa.</p>
+          <ul className="lp-perks">
+            <li>✅ Ingresso gratuito alla serata di benvenuto</li>
+            <li>✅ Posto riservato con il gruppo Gio</li>
+            <li>✅ Zero fila, zero stress</li>
+          </ul>
+          <motion.a
+            href="https://wa.me/393289466213?text=Ciao Gio! Voglio il mio Life Pass omaggio 🎟"
+            target="_blank"
+            rel="noreferrer"
+            className="btn-lime lp-cta"
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.97 }}
+          >
+            🎟 VOGLIO IL MIO LIFE PASS
+          </motion.a>
+          <p className="lp-note">+9.000 persone lo hanno già fatto nel 2025</p>
+        </motion.div>
+
+        <LifePassTicket />
       </section>
 
       {/* ══ CATEGORIE ════════════════════════════════ */}
@@ -327,7 +431,7 @@ function ZanteLanding() {
           />
           <div className="gio-photo-badge">
             <span>🌟</span>
-            <span>+184 partiti con Gio</span>
+            <span>+9.000 partiti con Gio</span>
           </div>
           <div className="gio-photo-glow" />
         </div>
@@ -335,7 +439,7 @@ function ZanteLanding() {
         {/* Text col */}
         <div className="gio-col">
           <div className="gio-text">
-            <p className="label dark">Chi è Gio</p>
+            <p className="label dark">Chi sono</p>
             <h2>Il volto degli eventi<br />a Zante da anni</h2>
             <p>Sono Gio. Seleziono solo il top, ti seguo prima che tu parta e ti trovi direttamente a Laganas. Un riferimento reale, non un bot.</p>
             <p className="claim">{siteConfig.claim}</p>
@@ -446,36 +550,18 @@ function ZanteLanding() {
           <div className="contact-avatar">GIO</div>
           <div className="contact-bubbles">
             <span>Scrivimi prima di partire</span>
-            <span>Ci vediamo a Laganas</span>
+            <span>Ti aspetto a Laganas 🌊</span>
           </div>
         </div>
         <div className="contact-text">
-          <p className="label">Contatti diretti</p>
-          <h2>Parla con Gio<br />in prima persona</h2>
-          <p>Supporto reale su WhatsApp, Instagram e TikTok. Prima, durante e dopo Zante.</p>
+          <p className="label">Scrivimi direttamente</p>
+          <h2>Sono qui per te,<br />prima e durante Zante</h2>
+          <p>Rispondo personalmente su WhatsApp, Instagram e TikTok. Nessun bot, solo io — prima che tu parta e ogni sera sull&apos;isola.</p>
           <div className="contact-buttons">
-            <motion.a className="btn-lime" href="https://wa.me/393289466213" target="_blank" rel="noreferrer" whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>💬 WhatsApp</motion.a>
-            <motion.a className="btn-dark" href="https://www.instagram.com/partycongio?igsh=MW9xdXJvYXNjYzlvNQ==" target="_blank" rel="noreferrer" whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>📸 Instagram</motion.a>
-            <motion.a className="btn-dark" href="https://www.tiktok.com/@giorgiacozzoli_?_r=1&_t=ZN-94vo8BV3mFy" target="_blank" rel="noreferrer" whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>🎵 TikTok</motion.a>
+            <motion.a className="btn-lime" href="https://wa.me/393289466213" target="_blank" rel="noreferrer" whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>💬 SCRIVIMI SU WHATSAPP</motion.a>
+            <motion.a className="btn-dark" href="https://www.instagram.com/partycongio?igsh=MW9xdXJvYXNjYzlvNQ==" target="_blank" rel="noreferrer" whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>📸 INSTAGRAM</motion.a>
+            <motion.a className="btn-dark" href="https://www.tiktok.com/@giorgiacozzoli_?_r=1&_t=ZN-94vo8BV3mFy" target="_blank" rel="noreferrer" whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>🎵 TIKTOK</motion.a>
           </div>
-          <form className="contact-form" onSubmit={handleContact}>
-            <h3>O scrivimi direttamente</h3>
-            {contactState === 'sent'  && <p className="cf-success">✅ Messaggio inviato! Gio ti risponde al più presto.</p>}
-            {contactState === 'error' && <p className="cf-error">❌ Errore. Riprova o scrivimi su WhatsApp.</p>}
-            {contactState !== 'sent' && (
-              <>
-                <div className="cf-row">
-                  <input type="text"  placeholder="Il tuo nome *" value={contact.name}    onChange={(e) => setContact({ ...contact, name: e.target.value })} required />
-                  <input type="email" placeholder="Email"          value={contact.email}   onChange={(e) => setContact({ ...contact, email: e.target.value })} />
-                </div>
-                <input type="tel" placeholder="Numero di telefono (opzionale)" value={contact.phone} onChange={(e) => setContact({ ...contact, phone: e.target.value })} className="cf-full" />
-                <textarea rows="4" placeholder="Di cosa hai bisogno? Scrivi qui… *" value={contact.message} onChange={(e) => setContact({ ...contact, message: e.target.value })} required />
-                <button type="submit" className="btn-lime cf-submit" disabled={contactState === 'sending'}>
-                  {contactState === 'sending' ? 'Invio in corso…' : 'Invia messaggio'}
-                </button>
-              </>
-            )}
-          </form>
         </div>
       </Section>
 
@@ -485,11 +571,10 @@ function ZanteLanding() {
           <div className="ps-text">
             <p className="label">Collaborazioni 2026</p>
             <h2>Vuoi portare il tuo brand a Zante?</h2>
-            <p>Target 18–25 anni. Visibilità su beach, boat e night party. 2K+ follower, 500+ partecipanti.</p>
+            <p>Target 18–25 anni. 50.000+ partecipanti, 110 serate, 5 tipi di party. Visibilità diretta sul pubblico giusto.</p>
           </div>
           <div className="ps-actions">
-            <motion.a className="btn-lime" href="mailto:partnership@partycongio.com" whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>✉ Media kit</motion.a>
-            <motion.a className="btn-outline-white" href="#contatti" whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>Parla con Gio</motion.a>
+            <motion.a className="btn-lime" href="https://wa.me/393289466213" target="_blank" rel="noreferrer" whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>💬 CONTATTAMI</motion.a>
           </div>
         </div>
       </Section>
@@ -511,27 +596,34 @@ function ZanteLanding() {
 
       {/* ══ FOOTER ═══════════════════════════════════ */}
       <footer className="footer">
-        <img
-          src="https://res.cloudinary.com/djb2nkpez/image/upload/w_220,h_80,c_fit,f_auto,q_auto/1-removebg-preview_fddema"
-          alt="Party con Gio"
-          className="footer-logo"
-        />
+        <span className="logo-text footer-logo-text">
+          <span className="logo-accent">PARTY</span><span className="logo-mid">CON</span><span className="logo-accent">GIO</span>
+        </span>
         <p className="footer-claim">{siteConfig.claim}</p>
         <div className="footer-socials">
           <a href="https://wa.me/393289466213"               target="_blank" rel="noreferrer">💬 WhatsApp</a>
           <a href="https://www.instagram.com/partycongio?igsh=MW9xdXJvYXNjYzlvNQ==" target="_blank" rel="noreferrer">📸 Instagram</a>
           <a href="https://www.tiktok.com/@giorgiacozzoli_?_r=1&_t=ZN-94vo8BV3mFy" target="_blank" rel="noreferrer">🎵 TikTok</a>
         </div>
+        <a
+          href="https://wa.me/393289466213"
+          className="footer-wa-cta"
+          target="_blank"
+          rel="noreferrer"
+        >
+          💬 SCRIVIMI SU WHATSAPP
+        </a>
         <div className="footer-partners">
           {partners.map((p) => <span key={p}>{p}</span>)}
         </div>
+        <p className="footer-copy">© 2026 Party con Gio · Zante Edition · Tutti i diritti riservati</p>
       </footer>
 
       {/* ══ MOBILE BAR ═══════════════════════════════ */}
       <div className="mobile-bar">
-        <button type="button" onClick={() => openModal('tutti')}>🎉 Eventi</button>
-        <a href="#gio">Gio</a>
-        <a href="#contatti">Contatti</a>
+        <button type="button" onClick={() => openModal('tutti')}>🎉 EVENTI</button>
+        <a href="#gio">CHI SONO</a>
+        <a href="#contatti">CONTATTI</a>
       </div>
 
       <EventsModal
