@@ -92,16 +92,8 @@ export const benefits = [
     text: 'Hai il ticket giusto, le info chiare e arrivi pronto senza perdere tempo in coda o chat infinite.',
   },
   {
-    title: 'Solo eventi che valgono davvero',
-    text: 'Ti propongo una selezione curata, non una lista random: beach, boat e club con vibe reale.',
-  },
-  {
     title: 'Esperienza su misura per il tuo gruppo',
     text: 'Se siete tranquilli o super carichi, adatto il piano eventi al vostro stile e budget.',
-  },
-  {
-    title: 'Contatto diretto con me',
-    text: 'Ti seguo prima di partire e quando sei in isola: supporto vero, non assistenza impersonale.',
   },
   {
     title: 'Ticket ufficiali e prenotazione sicura',

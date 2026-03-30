@@ -322,9 +322,21 @@
 
 .adm-date-fields {
   display: grid;
-  grid-template-columns: 2fr 1fr 2.5fr;
+  grid-template-columns: 2fr 1fr 2.5fr auto;
   gap: 0.5rem;
   flex: 1;
+  align-items: center;
+}
+.adm-date-soldout {
+  display: flex; align-items: center; gap: 0.4rem;
+  cursor: pointer; white-space: nowrap;
+  font-size: 0.78rem; font-weight: 700;
+  color: var(--adm-red);
+  user-select: none;
+}
+.adm-date-soldout input[type="checkbox"] {
+  width: 15px; height: 15px; cursor: pointer;
+  accent-color: var(--adm-red);
 }
 
 .adm-date-fields input {
@@ -727,6 +739,7 @@
   .adm-events-grid { grid-template-columns: 1fr; }
   .adm-date-fields { grid-template-columns: 1fr 1fr; }
   .adm-date-link { grid-column: 1 / -1; }
+  .adm-date-soldout { grid-column: 1 / -1; }
   .adm-import-row { flex-direction: column; }
   .adm-import-btn { width: 100%; }
 }

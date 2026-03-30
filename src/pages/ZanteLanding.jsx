@@ -74,13 +74,13 @@ function Section({ children, className = '', id, style }) {
   )
 }
 
-/* ─── LifePassTicket ─────────────────────────── */
-function LifePassTicket() {
+/* ─── LifePassWristband ──────────────────────── */
+function LifePassWristband() {
   const cardRef = useRef(null)
   const mouseX  = useMotionValue(0)
   const mouseY  = useMotionValue(0)
-  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [13, -13]), { stiffness: 260, damping: 28 })
-  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-13, 13]), { stiffness: 260, damping: 28 })
+  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [16, -16]), { stiffness: 240, damping: 26 })
+  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-16, 16]), { stiffness: 240, damping: 26 })
 
   function onMouseMove(e) {
     const r = cardRef.current.getBoundingClientRect()
@@ -90,57 +90,26 @@ function LifePassTicket() {
   function onMouseLeave() { mouseX.set(0); mouseY.set(0) }
 
   return (
-    <div style={{ perspective: '900px' }} className="lp-ticket-outer">
+    <div className="lp-ticket-outer">
+      <div className="lp-ticket-glow" />
       <motion.div
         ref={cardRef}
-        className="lp-ticket-wrap"
+        className="lp-wristband-wrap"
         style={{ rotateX, rotateY }}
         onMouseMove={onMouseMove}
         onMouseLeave={onMouseLeave}
-        initial={{ opacity: 0, y: 60 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 60, rotate: -6 }}
+        whileInView={{ opacity: 1, y: 0, rotate: -6 }}
         viewport={{ once: true, margin: '-80px' }}
-        transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
-        whileHover={{ scale: 1.03 }}
+        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        whileHover={{ scale: 1.05 }}
       >
-        <div className="lp-ticket-glow" />
-        <div className="lp-ticket">
-          <div className="lp-shimmer" />
-
-          {/* Header band */}
-          <div className="lp-ticket-header">
-            <span className="lp-th-brand">
-              <span className="logo-accent">PARTY</span>
-              <span style={{ color: 'rgba(7,5,15,0.65)' }}>CON</span>
-              <span className="logo-accent">GIO</span>
-            </span>
-            <span className="lp-th-year">ZANTE 2026</span>
-          </div>
-
-          {/* Body */}
-          <div className="lp-ticket-body">
-            <span className="lp-ticket-icon">🎟</span>
-            <h3 className="lp-ticket-name">LIFE PASS</h3>
-            <p className="lp-ticket-sub">INGRESSO OMAGGIO</p>
-            <div className="lp-ticket-badge">✦ ESCLUSIVO ✦</div>
-          </div>
-
-          {/* Perforated divider */}
-          <div className="lp-ticket-perf">
-            <div className="lp-perf-hole" />
-            <div className="lp-perf-line" />
-            <div className="lp-perf-hole" />
-          </div>
-
-          {/* Stub */}
-          <div className="lp-ticket-stub">
-            <div>
-              <span>LAGANAS · ZANTE</span>
-              <span>ESTATE 2026</span>
-            </div>
-            <span className="lp-admit">ADMIT ONE</span>
-          </div>
-        </div>
+        <img
+          src="/life-pass-wristband.png"
+          alt="Life Pass Wristband — Party con Gio Zante 2026"
+          className="lp-wristband-img"
+          draggable={false}
+        />
       </motion.div>
     </div>
   )
@@ -161,9 +130,9 @@ function EventCard({ ev }) {
     >
       <div className="ev-thumb">
         {ev.imageId
-          ? <img src={cloudinaryUrl(ev.imageId, 'w_460,h_320,c_fill,q_auto,f_auto')} alt={ev.title} />
+          ? <img src={cloudinaryUrl(ev.imageId, 'w_500,h_680,c_fill,g_auto,q_auto:best,f_auto')} alt={ev.title} />
           : ev.imageUrl
-            ? <img src={cloudinaryFetch(ev.imageUrl, 'w_460,h_320,c_fill,q_auto,f_auto')} alt={ev.title} />
+            ? <img src={cloudinaryFetch(ev.imageUrl, 'w_500,h_680,c_fill,g_auto,q_auto:best,f_auto')} alt={ev.title} />
             : <div className="ev-thumb-gradient" />
         }
         {ev.badge && (
@@ -284,6 +253,9 @@ function ZanteLanding() {
           <motion.h1 variants={FADE_UP}>
             PARTY A ZANTE<br />CON GIO'
           </motion.h1>
+          <motion.p className="hero-tagline" variants={FADE_UP}>
+            NON RESTARE FUORI.
+          </motion.p>
           <motion.p className="hero-sub" variants={FADE_UP}>
             Ho selezionato per te i migliori beach, boat e night party dell&apos;isola.
             Zero stress, zero sold out — ci penso io.
@@ -355,39 +327,6 @@ function ZanteLanding() {
             </>
           ))}
         </motion.div>
-      </section>
-
-      {/* ══ LIFE PASS ════════════════════════════════ */}
-      <section className="sec-lifepass">
-        <motion.div
-          className="lp-text"
-          initial={{ opacity: 0, x: -40 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <p className="label">🎁 Solo per chi mi contatta prima</p>
-          <h2>LIFE PASS<br />IN OMAGGIO</h2>
-          <p>Scrivimi su WhatsApp prima di partire e ti regalo l&apos;ingresso gratuito alla serata di benvenuto a Zante. Nessun costo, nessuna sorpresa.</p>
-          <ul className="lp-perks">
-            <li>✅ Ingresso gratuito alla serata di benvenuto</li>
-            <li>✅ Posto riservato con il gruppo Gio</li>
-            <li>✅ Zero fila, zero stress</li>
-          </ul>
-          <motion.a
-            href="https://wa.me/393289466213?text=Ciao Gio! Voglio il mio Life Pass omaggio 🎟"
-            target="_blank"
-            rel="noreferrer"
-            className="btn-lime lp-cta"
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.97 }}
-          >
-            🎟 VOGLIO IL MIO LIFE PASS
-          </motion.a>
-          <p className="lp-note">+9.000 persone lo hanno già fatto nel 2025</p>
-        </motion.div>
-
-        <LifePassTicket />
       </section>
 
       {/* ══ CATEGORIE ════════════════════════════════ */}
@@ -464,6 +403,39 @@ function ZanteLanding() {
         </div>
       </Section>
 
+      {/* ══ LIFE PASS ════════════════════════════════ */}
+      <section className="sec-lifepass">
+        <motion.div
+          className="lp-text"
+          initial={{ opacity: 0, x: -40 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <p className="label">🎁 Solo per chi mi contatta prima</p>
+          <h2>LIFE PASS<br />IN OMAGGIO</h2>
+          <p>Solo per chi acquista almeno un evento — contattami per sapere come ottenere il tuo Life Pass.</p>
+          <ul className="lp-perks">
+            <li>✅ Ingresso gratuito alla serata di benvenuto</li>
+            <li>✅ Posto riservato con il gruppo Gio</li>
+            <li>✅ Zero fila, zero stress</li>
+          </ul>
+          <motion.a
+            href="https://wa.me/393289466213?text=Ciao Gio! Voglio il mio Life Pass omaggio 🎟"
+            target="_blank"
+            rel="noreferrer"
+            className="btn-lime lp-cta"
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.97 }}
+          >
+            🎟 VOGLIO IL MIO LIFE PASS
+          </motion.a>
+          <p className="lp-note">+9.000 persone lo hanno già ricevuto nel 2025</p>
+        </motion.div>
+
+        <LifePassWristband />
+      </section>
+
       {/* ══ TUTTI GLI EVENTI ═════════════════════════ */}
       <Section className="sec sec-events">
         <div className="sec-header">
@@ -486,9 +458,18 @@ function ZanteLanding() {
         ) : allVisible.length === 0 ? (
           <p className="ev-loading">Presto disponibili. Stay tuned! 🎉</p>
         ) : (
-          <div className="scroll-row">
-            {allVisible.map((ev) => <EventCard key={ev.id} ev={ev} />)}
-          </div>
+          <>
+            <div className="scroll-row">
+              {allVisible.slice(0, 4).map((ev) => <EventCard key={ev.id} ev={ev} />)}
+            </div>
+            {allVisible.length > 4 && (
+              <div className="sec-more-cta">
+                <motion.button type="button" className="btn-lime" onClick={() => openModal('tutti')} whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
+                  🎉 SCOPRI TUTTI GLI EVENTI ({allVisible.length})
+                </motion.button>
+              </div>
+            )}
+          </>
         )}
       </Section>
 
@@ -514,8 +495,15 @@ function ZanteLanding() {
               </motion.button>
             </div>
             <div className="scroll-row">
-              {badgeEvents.map((ev) => <EventCard key={ev.id} ev={ev} />)}
+              {badgeEvents.slice(0, 4).map((ev) => <EventCard key={ev.id} ev={ev} />)}
             </div>
+            {badgeEvents.length > 4 && (
+              <div className="sec-more-cta">
+                <motion.button type="button" className={dark ? 'btn-white' : 'btn-lime'} onClick={() => openModal(badge)} whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
+                  🎉 SCOPRI TUTTI ({badgeEvents.length})
+                </motion.button>
+              </div>
+            )}
           </Section>
         )
       })}
@@ -539,8 +527,15 @@ function ZanteLanding() {
             </motion.button>
           </div>
           <div className="scroll-row">
-            {soldOutEvents.map((ev) => <EventCard key={ev.id} ev={ev} />)}
+            {soldOutEvents.slice(0, 4).map((ev) => <EventCard key={ev.id} ev={ev} />)}
           </div>
+          {soldOutEvents.length > 4 && (
+            <div className="sec-more-cta">
+              <motion.button type="button" className="btn-white" onClick={() => openModal('soldout-risk')} whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
+                🚨 VEDI TUTTI ({soldOutEvents.length})
+              </motion.button>
+            </div>
+          )}
         </Section>
       )}
 
@@ -591,6 +586,49 @@ function ZanteLanding() {
               <p>{item.answer}</p>
             </details>
           ))}
+        </div>
+      </Section>
+
+      {/* ══ PROMO PACK ═══════════════════════════════ */}
+      <Section className="sec-promo-pack">
+        <div className="pp-badge-row">
+          <span className="pp-badge">🎯 OFFERTA ESCLUSIVA</span>
+        </div>
+        <div className="pp-inner">
+          <div className="pp-text">
+            <p className="label dark">Convenienza assicurata</p>
+            <h2>4 FESTE.<br />UN SOLO PREZZO.</h2>
+            <p>Con soli <strong className="pp-price-inline">65€</strong> prenoti 4 eventi scelti da me. Beach, boat, night e pool party — tutto incluso, zero sorprese. Meno di un ingresso singolo in discoteca a testa.</p>
+            <motion.a
+              href="https://wa.me/393289466213?text=Ciao Gio! Voglio il Promo Pack da 65€ 🎉"
+              target="_blank"
+              rel="noreferrer"
+              className="btn-lime pp-cta"
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              💬 VOGLIO IL PROMO PACK
+            </motion.a>
+          </div>
+          <div className="pp-card">
+            <div className="pp-card-header">
+              <span className="pp-card-label">PROMO PACK</span>
+              <span className="pp-card-tag">BEST VALUE</span>
+            </div>
+            <div className="pp-price-block">
+              <span className="pp-currency">€</span>
+              <span className="pp-amount">65</span>
+              <span className="pp-per">/ 4 eventi</span>
+            </div>
+            <div className="pp-events-list">
+              <div className="pp-event-item"><span>🏖</span><span>Beach Party</span></div>
+              <div className="pp-event-item"><span>⛵</span><span>Boat Party</span></div>
+              <div className="pp-event-item"><span>🌙</span><span>Night Club</span></div>
+              <div className="pp-event-item"><span>💦</span><span>Pool Party</span></div>
+            </div>
+            <div className="pp-divider" />
+            <p className="pp-card-note">Disponibilità limitata · Solo su WhatsApp</p>
+          </div>
         </div>
       </Section>
 

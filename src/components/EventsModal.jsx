@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { cloudinaryUrl } from '../config/firebase'
+import { cloudinaryUrl, cloudinaryFetch } from '../config/firebase'
 
 // Parse Italian date string → Date for chronological sort
 const MONTHS_IT = {
@@ -138,7 +138,13 @@ function EventsModal({ open, onClose, events = [], initialFilter = 'tutti' }) {
                     <div className="modal-ev-img">
                       {ev.imageId ? (
                         <img
-                          src={cloudinaryUrl(ev.imageId, 'w_200,h_140,c_fill,q_auto,f_auto')}
+                          src={cloudinaryUrl(ev.imageId, 'w_280,c_limit,q_auto:best,f_auto')}
+                          alt={ev.title}
+                          loading="lazy"
+                        />
+                      ) : ev.imageUrl ? (
+                        <img
+                          src={cloudinaryFetch(ev.imageUrl, 'w_280,c_limit,q_auto:best,f_auto')}
                           alt={ev.title}
                           loading="lazy"
                         />
@@ -159,12 +165,14 @@ function EventsModal({ open, onClose, events = [], initialFilter = 'tutti' }) {
                       {ev.soldOutRisk && (
                         <p className="modal-ev-risk-label">🚨 Quasi esaurito</p>
                       )}
+
                       <div className="modal-ev-dates">
                         {dates.length > 0 ? dates.map((d, i) => (
-                          <div key={i} className="modal-ev-date-row">
+                          <div key={i} className={`modal-ev-date-row${d.soldOut ? ' modal-ev-date-sold' : ''}`}>
                             <span className="modal-ev-date-text">
-                              📅 {d.date}{d.time ? ` · ${d.time}` : ''}
+                              {d.soldOut ? '🚫' : '📅'} {d.date}{d.time ? ` · ${d.time}` : ''}
                             </span>
+                            {d.soldOut && <span className="modal-date-sold-tag">SOLD OUT</span>}
                           </div>
                         )) : (
                           <div className="modal-ev-date-row">

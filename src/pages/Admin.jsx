@@ -9,11 +9,11 @@ import {
   updateDoc,
 } from 'firebase/firestore'
 import { useNavigate } from 'react-router-dom'
-import { auth, cloudinaryUrl, cloudinaryFetch, db } from '../config/firebase'
+import { auth, cloudinaryUrl, cloudinaryFetch, uploadImageFromUrl, db } from '../config/firebase'
 import { useEvents, useMessages } from '../hooks/useEvents'
 import './Admin.css'
 
-const EMPTY_DATE = { date: '', time: '', referral: '' }
+const EMPTY_DATE = { date: '', time: '', referral: '', soldOut: false }
 
 const EMPTY_EVENT = {
   title: '',
@@ -213,11 +213,23 @@ function Admin() {
       // ── Step 3: dates from raw HTML ──────────────────────────────────────
       const parsedDates = rawHtml ? extractDatesFromHtml(rawHtml, url) : []
 
+      // ── Step 4: upload image to Cloudinary (async, non-blocking) ─────────
+      let cloudinaryPublicId = null
+      if (meta.imageUrl) {
+        setImportState('uploading')
+        cloudinaryPublicId = await uploadImageFromUrl(meta.imageUrl)
+      }
+
       setForm((prev) => ({
         ...prev,
         ...(meta.title       ? { title:       meta.title }       : {}),
         ...(meta.description ? { description: meta.description } : {}),
-        ...(meta.imageUrl    ? { imageUrl:    meta.imageUrl }    : {}),
+        // prefer Cloudinary public_id if upload succeeded, else fallback to external URL
+        ...(cloudinaryPublicId
+          ? { imageId: cloudinaryPublicId, imageUrl: '' }
+          : meta.imageUrl
+          ? { imageUrl: meta.imageUrl, imageId: '' }
+          : {}),
         dates: parsedDates.length > 0
           ? parsedDates
           : prev.dates.map((d, i) => i === 0 ? { ...d, referral: url } : d),
@@ -415,17 +427,20 @@ service cloud.firestore {
                         type="button"
                         className="adm-import-btn"
                         onClick={handleImport}
-                        disabled={importState === 'loading'}
+                        disabled={importState === 'loading' || importState === 'uploading'}
                       >
-                        {importState === 'loading' ? '⏳ Importo…' : '🔗 Importa'}
+                        {importState === 'loading'   ? '⏳ Leggo pagina…'
+                         : importState === 'uploading' ? '☁️ Carico su Cloudinary…'
+                         : '🔗 Importa'}
                       </button>
                     </div>
                     {importState === 'success' && (
                       <p className="adm-import-ok">
                         ✅ Importato!
+                        {form.imageId ? ' 🖼️ Foto salvata su Cloudinary.' : form.imageUrl ? ' 🖼️ Foto da URL esterno (upload Cloudinary non riuscito).' : ''}
                         {importDatesCount > 0
                           ? ` ${importDatesCount} data${importDatesCount > 1 ? ' trovate' : ' trovata'} in automatico. Controlla e completa badge / categoria.`
-                          : ' Titolo, descrizione e immagine pronti. Aggiungi tu le date.'}
+                          : ' Aggiungi le date manualmente.'}
                       </p>
                     )}
                     {importState === 'partial' && (
@@ -551,6 +566,14 @@ service cloud.firestore {
                             placeholder="https://biglietteria.it/evento"
                             className="adm-date-link"
                           />
+                          <label className="adm-date-soldout">
+                            <input
+                              type="checkbox"
+                              checked={!!d.soldOut}
+                              onChange={(e) => updateDate(i, 'soldOut', e.target.checked)}
+                            />
+                            <span>Sold Out</span>
+                          </label>
                         </div>
                         {form.dates.length > 1 && (
                           <button type="button" className="adm-remove-date" onClick={() => removeDate(i)} aria-label="Rimuovi data">
