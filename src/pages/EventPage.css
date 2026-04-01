@@ -271,10 +271,10 @@
 .ep-cta:hover { opacity: 0.85; transform: translateY(-1px); }
 
 .ep-cta-ticket {
-  background: linear-gradient(135deg, #8b5cf6, #d946ef);
-  color: #fff;
+  background: linear-gradient(135deg, #a3e635, #84cc16);
+  color: #0b1300;
   border: none;
-  box-shadow: 0 4px 16px rgba(139,92,246,0.3);
+  box-shadow: 0 6px 20px rgba(163,230,53,0.35);
 }
 .ep-cta-wa {
   background: #25d366;

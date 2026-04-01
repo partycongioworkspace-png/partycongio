@@ -1,6 +1,7 @@
 // Badge config — usato in admin, landing e modal
 export const BADGE_CONFIG = {
   'HYPE':          { icon: '🔥', label: 'Hype del Momento',   color: 'fuchsia' },
+  'TENDENZA':      { icon: '💖', label: 'Tendenza',           color: 'fuchsia' },
   'TOP PICK':      { icon: '💎', label: 'Top Selection',       color: 'violet'  },
   'CONSIGLIATO':   { icon: '⭐', label: 'Consigliato da Gio',  color: 'lime'    },
   'PROMO':         { icon: '🎯', label: 'Promo',               color: 'default' },
@@ -10,6 +11,7 @@ export const BADGE_CONFIG = {
 
 export const BADGE_SECTIONS = [
   { badge: 'HYPE',          icon: '🔥', title: 'Hype del Momento',  dark: true  },
+  { badge: 'TENDENZA',      icon: '💖', title: 'Tendenza',          dark: true  },
   { badge: 'TOP PICK',      icon: '💎', title: 'Top Selection',      dark: false },
   { badge: 'PROMO',         icon: '🎯', title: 'In Promo',           dark: false },
   { badge: 'SPECIAL GUEST', icon: '🎤', title: 'Special Guest',      dark: true  },

@@ -21,6 +21,7 @@ function parseItalianDate(str) {
 const FILTERS = [
   { key: 'tutti',          label: 'Tutti',           icon: '🎉' },
   { key: 'HYPE',           label: 'Hype',            icon: '🔥' },
+  { key: 'TENDENZA',       label: 'Tendenza',        icon: '💖' },
   { key: 'TOP PICK',       label: 'Top Pick',        icon: '💎' },
   { key: 'CONSIGLIATO',    label: 'Consigliato',     icon: '⭐' },
   { key: 'PROMO',          label: 'Promo',           icon: '🎯' },
@@ -31,6 +32,7 @@ const FILTERS = [
 
 const BADGE_COLORS = {
   'HYPE':          'badge-hype',
+  'TENDENZA':      'badge-tendenza',
   'TOP PICK':      'badge-top-pick',
   'CONSIGLIATO':   'badge-consigliato',
   'PROMO':         'badge-promo',
@@ -54,6 +56,17 @@ function EventsModal({ open, onClose, events = [], initialFilter = 'tutti' }) {
     return () => clearTimeout(timer)
   }, [open, initialFilter])
 
+  // Se il filtro attivo non ha piu eventi (tab nascosto), torna a Tutti
+  useEffect(() => {
+    if (!open) return
+    const filterHasEvents = (key) => {
+      if (key === 'tutti') return true
+      if (key === 'soldout-risk') return events.some((e) => e.soldOutRisk)
+      return events.some((e) => e.badge === key)
+    }
+    if (!filterHasEvents(filter)) setFilter('tutti')
+  }, [open, events, filter])
+
   if (!open) return null
 
   // Sort chronologically by first date
@@ -70,7 +83,6 @@ function EventsModal({ open, onClose, events = [], initialFilter = 'tutti' }) {
     ? sorted.filter((e) => e.soldOutRisk)
     : sorted.filter((e) => e.badge === filter)
 
-  // Only show filter tabs that actually have events
   const availableFilters = FILTERS.filter((f) => {
     if (f.key === 'tutti') return true
     if (f.key === 'soldout-risk') return events.some((e) => e.soldOutRisk)

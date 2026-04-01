@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useInView, useMotionValue, useTransform, useSpring } from 'framer-motion'
 import EventsModal from '../components/EventsModal'
@@ -27,6 +27,8 @@ const STAGGER = {
 const CATEGORY_CARDS = [
   {
     id: 'beach',
+    filterType: 'category',
+    filterValue: 'beach',
     title: 'Beach Party',
     subtitle: 'Spiaggia, sole e vibes estive',
     icon: '🏖',
@@ -35,6 +37,8 @@ const CATEGORY_CARDS = [
   },
   {
     id: 'boat',
+    filterType: 'category',
+    filterValue: 'boat',
     title: 'Boat Party',
     subtitle: 'Musica sul mare aperto',
     icon: '⛵',
@@ -43,6 +47,8 @@ const CATEGORY_CARDS = [
   },
   {
     id: 'night',
+    filterType: 'category',
+    filterValue: 'night',
     title: 'Night Club',
     subtitle: 'I club più hot di Laganas',
     icon: '🌙',
@@ -51,6 +57,8 @@ const CATEGORY_CARDS = [
   },
   {
     id: 'pool',
+    filterType: 'category',
+    filterValue: 'pool',
     title: 'Pool Party',
     subtitle: 'Piscina, cocktail e DJ set',
     icon: '💦',
@@ -58,8 +66,22 @@ const CATEGORY_CARDS = [
     img: 'https://images.unsplash.com/photo-1622313762347-3c09fe5f2719?w=900&q=85',
   },
   {
+    id: 'tendenza',
+    filterType: 'badge',
+    filterValue: 'TENDENZA',
+    title: 'Trend',
+    titleClass: 'cat-title-trend',
+    subtitle: 'Gli eventi piu in trend',
+    icon: '💖',
+    color: '#d946ef',
+    img: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=900&q=85',
+  },
+  {
     id: 'special',
-    title: 'Special Guest',
+    filterType: 'badge',
+    filterValue: 'SPECIAL GUEST',
+    titleLines: ['Special', 'Guest'],
+    titleClass: 'cat-title-special-guest',
     subtitle: 'Artisti ospiti e serate esclusive',
     icon: '🎤',
     color: '#ffd700',
@@ -367,13 +389,13 @@ function ZanteLanding() {
             { val: '5',     label: 'Tipi di Party' },
             { val: '0',     label: 'Sold Out Sorpresa' },
           ].map((s, i, arr) => (
-            <>
-              <div className="hs-item" key={s.label}>
+            <Fragment key={s.label}>
+              <div className="hs-item">
                 <span>{s.val}</span>
                 <p>{s.label}</p>
               </div>
-              {i < arr.length - 1 && <div className="hs-sep" key={`sep-${i}`} />}
-            </>
+              {i < arr.length - 1 && <div className="hs-sep" />}
+            </Fragment>
           ))}
         </motion.div>
       </section>
@@ -404,7 +426,15 @@ function ZanteLanding() {
                 <div className="cat-overlay" />
                 <div className="cat-body">
                   <span className="cat-icon">{cat.icon}</span>
-                  <h3>{cat.title}</h3>
+                  {cat.titleLines ? (
+                    <h3 className={cat.titleClass || undefined}>
+                      {cat.titleLines.map((line) => (
+                        <span key={line} className="cat-title-stack-line">{line}</span>
+                      ))}
+                    </h3>
+                  ) : (
+                    <h3 className={cat.titleClass || undefined}>{cat.title}</h3>
+                  )}
                   <p className="cat-subtitle">{cat.subtitle}</p>
                   <span className="cat-cta-pill" style={{ background: cat.color, color: '#07050f' }}>
                     {isActive ? 'Chiudi ✕' : 'Scopri eventi →'}
@@ -417,8 +447,13 @@ function ZanteLanding() {
 
         {/* ── Filtered events for selected category ── */}
         {activeCat && (() => {
-          const catEvs = chronoSort(events.filter((e) => e.category === activeCat))
           const activeCatData = CATEGORY_CARDS.find((c) => c.id === activeCat)
+          const catEvs = chronoSort(events.filter((e) => {
+            if (!activeCatData) return false
+            return activeCatData.filterType === 'badge'
+              ? e.badge === activeCatData.filterValue
+              : e.category === activeCatData.filterValue
+          }))
           return catEvs.length > 0 ? (
             <motion.div
               className="cat-ev-row"

@@ -17,6 +17,7 @@ const STAGGER = {
 
 const BADGE_COLORS = {
   'HYPE':        { bg: '#d946ef', text: '#fff',      label: '🔥 Hype' },
+  'TENDENZA':    { bg: '#ec4899', text: '#fff',      label: '💖 Tendenza' },
   'TOP PICK':    { bg: '#8b5cf6', text: '#fff',      label: '💎 Top Pick' },
   'CONSIGLIATO': { bg: '#a3e635', text: '#0f1014',   label: '⭐ Consigliato da Gio' },
   'PROMO':       { bg: '#0f1014', text: '#a3e635',   label: '🎯 Promo' },

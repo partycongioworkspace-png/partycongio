@@ -470,6 +470,7 @@ service cloud.firestore {
                       <label>Badge</label>
                       <select value={form.badge} onChange={(e) => setForm({ ...form, badge: e.target.value })}>
                         <option value="HYPE">🔥 HYPE — Tendenza del momento</option>
+                        <option value="TENDENZA">💖 TENDENZA — Piu in trend</option>
                         <option value="TOP PICK">💎 TOP PICK — Il più scelto</option>
                         <option value="CONSIGLIATO">⭐ CONSIGLIATO — Consigliato da Gio</option>
                         <option value="PROMO">🎯 PROMO — Offerta speciale</option>
