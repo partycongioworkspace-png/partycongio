@@ -174,13 +174,12 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
   height: 100%;
   object-fit: cover;
   object-position: center;
-  opacity: 0.38;
-  /* subtle scale-in on load */
+  opacity: 0.55;
   animation: video-scale-in 1.2s ease-out forwards;
 }
 @keyframes video-scale-in {
   from { transform: scale(1.06); opacity: 0; }
-  to   { transform: scale(1);    opacity: 0.38; }
+  to   { transform: scale(1);    opacity: 0.55; }
 }
 
 /* gradient overlay — heavier to keep text readable over video */
@@ -1410,7 +1409,7 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
       var(--app);
   }
   /* reduce video opacity on mobile for readability */
-  .hero-bg-video { opacity: 0.22; }
+  .hero-bg-video { opacity: 0.35; }
   /* shrink orbs so they stay within the hero bounds */
   .hero-orb-1 { width: 80vw; height: 80vw; right: -15%; top: -8%; }
   .hero-orb-2 { width: 65vw; height: 65vw; left: -15%; bottom: -8%; }

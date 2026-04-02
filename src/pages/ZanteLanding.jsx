@@ -297,7 +297,7 @@ function ZanteLanding() {
 
       {/* ══ HERO ═════════════════════════════════════ */}
       <section className="hero">
-        {/* Festival video background */}
+        {/* Hero video background — tuo video in priorità */}
         <div className="hero-bg-video-wrap">
           <video
             className="hero-bg-video"
@@ -305,9 +305,9 @@ function ZanteLanding() {
             muted
             loop
             playsInline
-            poster="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=1920&q=80"
+            preload="auto"
           >
-            <source src="https://assets.mixkit.co/videos/4269/4269-720.mp4" type="video/mp4" />
+            <source src="/hero.mp4" type="video/mp4" />
           </video>
         </div>
 
