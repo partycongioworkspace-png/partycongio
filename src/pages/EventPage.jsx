@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { cloudinaryUrl, cloudinaryFetch, db } from '../config/firebase'
 import { buildTrackedLink } from '../data/zanteData'
+import { IcoWA, IcoIG, IcoTT } from '../components/SocialIcons'
 import './EventPage.css'
 
 const FADE_UP = {
@@ -98,22 +99,36 @@ function EventPage() {
 
       {/* ── Hero ── */}
       <div className="ep-hero">
-        {event.imageId ? (
-          <img
-            src={cloudinaryUrl(event.imageId, 'w_1200,h_500,c_fill,q_auto,f_auto,g_center')}
-            alt={event.title}
-            className="ep-hero-img"
+        {/* sfondo sfocato = stessa immagine allargata, crea effetto colore estratto */}
+        {(event.imageId || event.imageUrl) && (
+          <div
+            className="ep-hero-blur-bg"
+            style={{
+              backgroundImage: `url(${
+                event.imageId
+                  ? cloudinaryUrl(event.imageId, 'w_400,q_30,f_auto')
+                  : cloudinaryFetch(event.imageUrl, 'w_400,q_30,f_auto')
+              })`,
+            }}
           />
-        ) : event.imageUrl ? (
-          <img
-            src={cloudinaryFetch(event.imageUrl, 'w_1200,h_500,c_fill,q_auto,f_auto,g_center')}
-            alt={event.title}
-            className="ep-hero-img"
-          />
-        ) : (
+        )}
+        {!event.imageId && !event.imageUrl && (
           <div className="ep-hero-placeholder" style={{ background: bgGradient }} />
         )}
         <div className="ep-hero-overlay" />
+
+        {/* flyer centrato con contain */}
+        {(event.imageId || event.imageUrl) && (
+          <img
+            src={
+              event.imageId
+                ? cloudinaryUrl(event.imageId, 'w_900,c_limit,q_auto:best,f_auto')
+                : cloudinaryFetch(event.imageUrl, 'w_900,c_limit,q_auto:best,f_auto')
+            }
+            alt={event.title}
+            className="ep-hero-img"
+          />
+        )}
 
         {badge && (
           <span
@@ -159,8 +174,8 @@ function EventPage() {
             {dates.length === 0 ? (
               <div className="ep-date-card ep-date-nodate">
                 <p>Date da confermare — contatta Gio per info</p>
-                <a href="https://wa.me/393289466213" target="_blank" rel="noreferrer" className="ep-cta ep-cta-wa">
-                  💬 Contatta Gio su WhatsApp →
+                <a href="https://wa.me/393289466213" target="_blank" rel="noreferrer" className="ep-cta ep-cta-wa ep-cta-social">
+                  <IcoWA size={17} /> Contatta Gio su WhatsApp →
                 </a>
               </div>
             ) : dates.map((d, i) => (
@@ -188,9 +203,9 @@ function EventPage() {
                     href={`https://wa.me/393289466213?text=Ciao Gio, mi interessa l'evento: ${encodeURIComponent(event.title)}`}
                     target="_blank"
                     rel="noreferrer"
-                    className={`ep-cta ep-cta-wa${d.referral ? ' ep-cta-secondary' : ''}`}
+                    className={`ep-cta ep-cta-wa ep-cta-social${d.referral ? ' ep-cta-secondary' : ''}`}
                   >
-                    💬 {d.referral ? 'Chiedi info' : 'Contatta Gio →'}
+                    <IcoWA size={16} /> {d.referral ? 'Chiedi info' : 'Contatta Gio →'}
                   </a>
                 </div>
               </div>
@@ -210,25 +225,25 @@ function EventPage() {
               href="https://wa.me/393289466213"
               target="_blank"
               rel="noreferrer"
-              className="ep-cta ep-cta-wa ep-cta-full"
+              className="ep-cta ep-cta-wa ep-cta-full ep-cta-social"
             >
-              💬 WhatsApp Business
+              <IcoWA size={18} /> WhatsApp
             </a>
             <a
               href="https://www.instagram.com/partycongio?igsh=MW9xdXJvYXNjYzlvNQ=="
               target="_blank"
               rel="noreferrer"
-              className="ep-cta ep-cta-ig ep-cta-full"
+              className="ep-cta ep-cta-ig ep-cta-full ep-cta-social"
             >
-              📸 Instagram
+              <IcoIG size={18} /> Instagram
             </a>
             <a
               href="https://www.tiktok.com/@giorgiacozzoli_?_r=1&_t=ZN-94vo8BV3mFy"
               target="_blank"
               rel="noreferrer"
-              className="ep-cta ep-cta-tt ep-cta-full"
+              className="ep-cta ep-cta-tt ep-cta-full ep-cta-social"
             >
-              🎵 TikTok
+              <IcoTT size={18} /> TikTok
             </a>
           </div>
 

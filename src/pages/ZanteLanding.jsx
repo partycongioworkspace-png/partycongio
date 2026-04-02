@@ -2,6 +2,7 @@ import { Fragment, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useInView, useMotionValue, useTransform, useSpring } from 'framer-motion'
 import EventsModal from '../components/EventsModal'
+import { IcoWA, IcoIG, IcoTT } from '../components/SocialIcons'
 import { db, cloudinaryUrl, cloudinaryFetch } from '../config/firebase'
 import { useEvents } from '../hooks/useEvents'
 import {
@@ -33,6 +34,7 @@ const CATEGORY_CARDS = [
     subtitle: 'Spiaggia, sole e vibes estive',
     icon: '🏖',
     color: '#f59e0b',
+    // spiaggia tropicale con onde e sabbia
     img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=900&q=85',
   },
   {
@@ -43,7 +45,8 @@ const CATEGORY_CARDS = [
     subtitle: 'Musica sul mare aperto',
     icon: '⛵',
     color: '#0ea5e9',
-    img: 'https://images.unsplash.com/photo-1559049977-56e0e22a4a48?w=900&q=85',
+    // festa su barca con gente che balla sul ponte
+    img: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=900&q=85',
   },
   {
     id: 'night',
@@ -53,7 +56,8 @@ const CATEGORY_CARDS = [
     subtitle: 'I club più hot di Laganas',
     icon: '🌙',
     color: '#8b5cf6',
-    img: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=900&q=85',
+    // folla in discoteca con luci laser e strobo
+    img: 'https://images.unsplash.com/photo-1574391884720-bbc3740c59d1?w=900&q=85',
   },
   {
     id: 'pool',
@@ -63,7 +67,8 @@ const CATEGORY_CARDS = [
     subtitle: 'Piscina, cocktail e DJ set',
     icon: '💦',
     color: '#06b6d4',
-    img: 'https://images.unsplash.com/photo-1622313762347-3c09fe5f2719?w=900&q=85',
+    // pool party affollato con persone in piscina
+    img: 'https://images.unsplash.com/photo-1575429198097-0414ec08e8cd?w=900&q=85',
   },
   {
     id: 'tendenza',
@@ -74,7 +79,8 @@ const CATEGORY_CARDS = [
     subtitle: 'Gli eventi piu in trend',
     icon: '💖',
     color: '#d946ef',
-    img: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=900&q=85',
+    // folla euforica con confetti e luci fucsia
+    img: 'https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?w=900&q=85',
   },
   {
     id: 'special',
@@ -85,7 +91,8 @@ const CATEGORY_CARDS = [
     subtitle: 'Artisti ospiti e serate esclusive',
     icon: '🎤',
     color: '#ffd700',
-    img: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=900&q=85',
+    // dj in lontananza sul palco con folla e luci
+    img: 'https://images.unsplash.com/photo-1493676304819-0d7a8d026dcf?w=900&q=85',
   },
 ]
 
@@ -543,11 +550,11 @@ function ZanteLanding() {
             href="https://wa.me/393289466213?text=Ciao Gio! Voglio il mio Life Pass omaggio 🎟"
             target="_blank"
             rel="noreferrer"
-            className="btn-lime lp-cta"
+            className="btn-lime lp-cta btn-social"
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.97 }}
           >
-            🎟 VOGLIO IL MIO LIFE PASS
+            <IcoWA size={19} /> VOGLIO IL MIO LIFE PASS
           </motion.a>
           <p className="lp-note">+9.000 persone lo hanno già ricevuto nel 2025</p>
         </motion.div>
@@ -670,11 +677,11 @@ function ZanteLanding() {
               href="https://wa.me/393289466213?text=Ciao Gio! Voglio il Summer Promo Pack da 65€ 🎉"
               target="_blank"
               rel="noreferrer"
-              className="btn-lime pp-cta"
+              className="btn-lime pp-cta btn-social"
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.97 }}
             >
-              💬 VOGLIO IL PROMO PACK
+              <IcoWA size={19} /> VOGLIO IL PROMO PACK
             </motion.a>
           </div>
           <div className="pp-flyer">
@@ -699,9 +706,9 @@ function ZanteLanding() {
           <h2>Scrivimi prima<br />di partire.</h2>
           <p>Rispondo personalmente su WhatsApp, Instagram e TikTok. Nessun bot, solo io — prima che tu parta e ogni sera sull&apos;isola.</p>
           <div className="contact-buttons">
-            <motion.a className="btn-lime" href="https://wa.me/393289466213" target="_blank" rel="noreferrer" whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>💬 SCRIVIMI SU WHATSAPP</motion.a>
-            <motion.a className="btn-dark" href="https://www.instagram.com/partycongio?igsh=MW9xdXJvYXNjYzlvNQ==" target="_blank" rel="noreferrer" whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>📸 INSTAGRAM</motion.a>
-            <motion.a className="btn-dark" href="https://www.tiktok.com/@giorgiacozzoli_?_r=1&_t=ZN-94vo8BV3mFy" target="_blank" rel="noreferrer" whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>🎵 TIKTOK</motion.a>
+            <motion.a className="btn-lime btn-social" href="https://wa.me/393289466213" target="_blank" rel="noreferrer" whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}><IcoWA size={19} /> SCRIVIMI SU WHATSAPP</motion.a>
+            <motion.a className="btn-dark btn-social" href="https://www.instagram.com/partycongio?igsh=MW9xdXJvYXNjYzlvNQ==" target="_blank" rel="noreferrer" whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}><IcoIG size={19} /> INSTAGRAM</motion.a>
+            <motion.a className="btn-dark btn-social" href="https://www.tiktok.com/@giorgiacozzoli_?_r=1&_t=ZN-94vo8BV3mFy" target="_blank" rel="noreferrer" whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}><IcoTT size={19} /> TIKTOK</motion.a>
           </div>
         </div>
       </Section>
@@ -715,7 +722,7 @@ function ZanteLanding() {
             <p>Target 18–25 anni. 50.000+ partecipanti, 110 serate, 5 tipi di party. Visibilità diretta sul pubblico giusto.</p>
           </div>
           <div className="ps-actions">
-            <motion.a className="btn-lime" href="https://wa.me/393289466213" target="_blank" rel="noreferrer" whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>💬 CONTATTAMI</motion.a>
+            <motion.a className="btn-lime btn-social" href="https://wa.me/393289466213" target="_blank" rel="noreferrer" whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}><IcoWA size={19} /> CONTATTAMI</motion.a>
           </div>
         </div>
       </Section>
