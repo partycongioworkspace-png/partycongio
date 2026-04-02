@@ -297,7 +297,7 @@ function ZanteLanding() {
 
       {/* ══ HERO ═════════════════════════════════════ */}
       <section className="hero">
-        {/* Hero video background — tuo video in priorità */}
+        {/* Festival video background */}
         <div className="hero-bg-video-wrap">
           <video
             className="hero-bg-video"
@@ -305,9 +305,9 @@ function ZanteLanding() {
             muted
             loop
             playsInline
-            preload="auto"
+            poster="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=1920&q=80"
           >
-            <source src="/hero.mp4" type="video/mp4" />
+            <source src="https://assets.mixkit.co/videos/4269/4269-720.mp4" type="video/mp4" />
           </video>
         </div>
 
@@ -406,6 +406,66 @@ function ZanteLanding() {
           ))}
         </motion.div>
       </section>
+
+      {/* ══ VIDEO SHOWCASE ══════════════════════════ */}
+      <Section className="sec-video-showcase">
+        <div className="vs-label-row">
+          <p className="label">Zante in diretta</p>
+          <h2 className="vs-title">Senti l'atmosfera</h2>
+        </div>
+        <div className="vs-grid">
+          {/* foto sinistra */}
+          <motion.div
+            className="vs-photo vs-photo-tl"
+            initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }} transition={{ duration: 0.55, delay: 0.1 }}
+          >
+            <img src="https://images.unsplash.com/photo-1574391884720-bbc3740c59d1?w=600&q=80" alt="night party" loading="lazy" />
+          </motion.div>
+          <motion.div
+            className="vs-photo vs-photo-bl"
+            initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }} transition={{ duration: 0.55, delay: 0.2 }}
+          >
+            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" alt="beach" loading="lazy" />
+          </motion.div>
+
+          {/* video centrale */}
+          <motion.div
+            className="vs-video-wrap"
+            initial={{ opacity: 0, scale: 0.93 }} whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.05 }}
+          >
+            <video
+              className="vs-video"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+            >
+              <source src="/hero.mp4" type="video/mp4" />
+            </video>
+            <div className="vs-video-glow" />
+          </motion.div>
+
+          {/* foto destra */}
+          <motion.div
+            className="vs-photo vs-photo-tr"
+            initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }} transition={{ duration: 0.55, delay: 0.1 }}
+          >
+            <img src="https://images.unsplash.com/photo-1575429198097-0414ec08e8cd?w=600&q=80" alt="pool party" loading="lazy" />
+          </motion.div>
+          <motion.div
+            className="vs-photo vs-photo-br"
+            initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }} transition={{ duration: 0.55, delay: 0.2 }}
+          >
+            <img src="https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=600&q=80" alt="boat party" loading="lazy" />
+          </motion.div>
+        </div>
+      </Section>
 
       {/* ══ CATEGORIE ════════════════════════════════ */}
       <Section className="sec-categories">
