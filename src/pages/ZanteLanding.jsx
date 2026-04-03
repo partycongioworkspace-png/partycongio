@@ -260,7 +260,8 @@ function EventCard({ ev, className = '' }) {
             {ev.badge}
           </span>
         )}
-        {ev.soldOutRisk && <span className="ev-risk-chip">🚨</span>}
+        {primaryDate?.soldOut && <div className="ev-soldout-overlay">SOLD OUT</div>}
+        {ev.soldOutRisk && !primaryDate?.soldOut && <span className="ev-risk-chip">🚨</span>}
         {ev.drinkIncluso && <span className="ev-drink-chip">🍹 drink incluso</span>}
       </div>
       <div className="ev-body">
@@ -301,7 +302,6 @@ function ZanteLanding() {
   const [contact, setContact]           = useState(EMPTY_CONTACT)
   const [contactState, setContactState] = useState('idle')
   const [scrolled, setScrolled]         = useState(false)
-  const [activeCat, setActiveCat]       = useState(null)
 
   const { events, loading: evLoading } = useEvents()
   const soldOutEvents = chronoSort(events.filter((e) => e.soldOutRisk))
@@ -474,75 +474,36 @@ function ZanteLanding() {
           <p className="cat-header-sub">Beach · Boat · Night · Pool · Special Guest</p>
         </div>
         <div className="cat-grid">
-          {CATEGORY_CARDS.map((cat) => {
-            const isActive = activeCat === cat.id
-            return (
-              <motion.button
-                key={cat.id}
-                className={`cat-card${isActive ? ' cat-active' : ''}`}
-                style={{
-                  backgroundImage: `url('${cat.img}')`,
-                  '--cat-color': cat.color,
-                }}
-                onClick={() => setActiveCat(isActive ? null : cat.id)}
-                whileHover={{ scale: 1.025 }}
-                whileTap={{ scale: 0.98 }}
-                transition={{ type: 'spring', stiffness: 260, damping: 22 }}
-              >
-                <div className="cat-overlay" />
-                <div className="cat-body">
-                  <span className="cat-icon">{cat.icon}</span>
-                  {cat.titleLines ? (
-                    <h3 className={cat.titleClass || undefined}>
-                      {cat.titleLines.map((line) => (
-                        <span key={line} className="cat-title-stack-line">{line}</span>
-                      ))}
-                    </h3>
-                  ) : (
-                    <h3 className={cat.titleClass || undefined}>{cat.title}</h3>
-                  )}
-                  <p className="cat-subtitle">{cat.subtitle}</p>
-                  <span className="cat-cta-pill" style={{ background: cat.color, color: '#07050f' }}>
-                    {isActive ? 'Chiudi ✕' : 'Scopri eventi →'}
-                  </span>
-                </div>
-              </motion.button>
-            )
-          })}
+          {CATEGORY_CARDS.map((cat) => (
+            <Link
+              key={cat.id}
+              to={`/categoria/${cat.id}`}
+              className="cat-card"
+              style={{
+                backgroundImage: `url('${cat.img}')`,
+                '--cat-color': cat.color,
+              }}
+            >
+              <div className="cat-overlay" />
+              <div className="cat-body">
+                <span className="cat-icon">{cat.icon}</span>
+                {cat.titleLines ? (
+                  <h3 className={cat.titleClass || undefined}>
+                    {cat.titleLines.map((line) => (
+                      <span key={line} className="cat-title-stack-line">{line}</span>
+                    ))}
+                  </h3>
+                ) : (
+                  <h3 className={cat.titleClass || undefined}>{cat.title}</h3>
+                )}
+                <p className="cat-subtitle">{cat.subtitle}</p>
+                <span className="cat-cta-pill" style={{ background: cat.color, color: '#07050f' }}>
+                  Scopri eventi →
+                </span>
+              </div>
+            </Link>
+          ))}
         </div>
-
-        {/* ── Filtered events for selected category ── */}
-        {activeCat && (() => {
-          const activeCatData = CATEGORY_CARDS.find((c) => c.id === activeCat)
-          const catEvs = chronoSort(events.filter((e) => {
-            if (!activeCatData) return false
-            return activeCatData.filterType === 'badge'
-              ? e.badge === activeCatData.filterValue
-              : e.category === activeCatData.filterValue
-          }))
-          return catEvs.length > 0 ? (
-            <motion.div
-              className="cat-ev-row"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-            >
-              <p className="cat-ev-row-label" style={{ color: activeCatData?.color }}>
-                {activeCatData?.icon} {activeCatData?.title} — {catEvs.length} event{catEvs.length > 1 ? 'i' : 'o'}
-              </p>
-              <ScrollRowArrows>
-                {catEvs.map((ev) => <EventCard key={ev.id} ev={ev} />)}
-              </ScrollRowArrows>
-            </motion.div>
-          ) : (
-            <motion.p
-              className="cat-ev-empty"
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            >
-              Nessun evento disponibile per questa categoria al momento. Torna presto 🎉
-            </motion.p>
-          )
-        })()}
       </Section>
 
       {/* ══ GIO ══════════════════════════════════════ */}

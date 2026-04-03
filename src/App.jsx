@@ -4,6 +4,7 @@ import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from './config/firebase'
 import Admin from './pages/Admin'
 import AdminLogin from './pages/AdminLogin'
+import CategoryPage from './pages/CategoryPage'
 import EventPage from './pages/EventPage'
 import ZanteLanding from './pages/ZanteLanding'
 
@@ -27,6 +28,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<ZanteLanding />} />
+        <Route path="/categoria/:id" element={<CategoryPage />} />
         <Route path="/eventi/:id" element={<EventPage />} />
         <Route path="/admin/login" element={
           !loading && user ? <Navigate to="/admin" replace /> : <AdminLogin />

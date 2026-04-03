@@ -706,6 +706,14 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
 .ev-badge-sold-out      { background: #ef4444; color: #fff; }
 .ev-badge-special-guest { background: linear-gradient(135deg, #b8860b, #ffd700); color: #07050f; }
 .ev-badge-default     { background: rgba(255,255,255,0.12); color: #fff; }
+.ev-soldout-overlay {
+  position: absolute; inset: 0; z-index: 4;
+  background: rgba(0,0,0,0.58);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; font-weight: 900; letter-spacing: 0.12em;
+  color: #9ca3af;
+  border-radius: inherit;
+}
 .ev-risk-chip {
   position: absolute; top: 0.7rem; right: 0.7rem; z-index: 3;
   font-size: 0.58rem; font-weight: 900;
