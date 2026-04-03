@@ -489,6 +489,8 @@ service cloud.firestore {
                         <option value="boat">⛵ Boat Party</option>
                         <option value="night">🌙 Night Club</option>
                         <option value="pool">💦 Pool Party</option>
+                        <option value="trend">💖 Trend</option>
+                        <option value="special-guest">🎤 Special Guest</option>
                       </select>
                     </div>
                     <div className="adm-field">
@@ -642,7 +644,10 @@ service cloud.firestore {
                         <div className="adm-ev-body">
                           <div className="adm-ev-badges">
                             <span className="adm-badge">{ev.badge}</span>
-                            <span className="adm-badge adm-badge-cat">{ev.category}</span>
+                            <span className="adm-badge adm-badge-cat">
+                              {{'beach':'🏖️ Beach','boat':'⛵ Boat','night':'🌙 Night','pool':'💦 Pool','trend':'💖 Trend','special-guest':'🎤 Special Guest'}[ev.category] || ev.category}
+                            </span>
+                            {ev.drinkIncluso && <span className="adm-badge adm-badge-drink">🍹 Drink</span>}
                             {ev.soldOutRisk && <span className="adm-badge adm-badge-risk">🔥 Sold Out Risk</span>}
                           </div>
                           <h3>{ev.title}</h3>

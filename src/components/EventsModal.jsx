@@ -83,6 +83,20 @@ function EventsModal({ open, onClose, events = [], initialFilter = 'tutti' }) {
     ? sorted.filter((e) => e.soldOutRisk)
     : sorted.filter((e) => e.badge === filter)
 
+  // Raggruppa per giorno (usa la prima data dell'evento)
+  const DAYS_IT = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato']
+  const grouped = filtered.reduce((acc, ev) => {
+    const firstDate = Array.isArray(ev.dates) ? ev.dates[0]?.date : null
+    const d = parseItalianDate(firstDate)
+    const isValid = d.getFullYear() < 9999
+    const key = isValid
+      ? `${DAYS_IT[d.getDay()]} ${d.getDate()} ${firstDate?.split(' ')[1] || ''} ${d.getFullYear()}`
+      : 'Date da confermare'
+    if (!acc[key]) acc[key] = []
+    acc[key].push(ev)
+    return acc
+  }, {})
+
   const availableFilters = FILTERS.filter((f) => {
     if (f.key === 'tutti') return true
     if (f.key === 'soldout-risk') return events.some((e) => e.soldOutRisk)
@@ -129,7 +143,7 @@ function EventsModal({ open, onClose, events = [], initialFilter = 'tutti' }) {
           })}
         </div>
 
-        {/* ── Events list ── */}
+        {/* ── Events list grouped by day ── */}
         <div className="modal-body">
           {filtered.length === 0 ? (
             <div className="modal-empty">
@@ -138,70 +152,79 @@ function EventsModal({ open, onClose, events = [], initialFilter = 'tutti' }) {
             </div>
           ) : (
             <div className="modal-ev-list">
-              {filtered.map((ev) => {
-                const dates = Array.isArray(ev.dates) ? ev.dates : []
-                const badgeClass = BADGE_COLORS[ev.badge] || 'badge-default'
-                return (
-                  <Link
-                    to={`/eventi/${ev.id}`}
-                    className="modal-ev-card"
-                    key={ev.id}
-                    onClick={onClose}
-                  >
-                    {/* Image */}
-                    <div className="modal-ev-img">
-                      {ev.imageId ? (
-                        <img
-                          src={cloudinaryUrl(ev.imageId, 'w_280,c_limit,q_auto:best,f_auto')}
-                          alt={ev.title}
-                          loading="lazy"
-                        />
-                      ) : ev.imageUrl ? (
-                        <img
-                          src={cloudinaryFetch(ev.imageUrl, 'w_280,c_limit,q_auto:best,f_auto')}
-                          alt={ev.title}
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div className={`modal-ev-img-placeholder modal-ph-${(ev.category || 'beach')}`} />
-                      )}
-                      {ev.badge && (
-                        <span className={`modal-ev-badge ${badgeClass}`}>{ev.badge}</span>
-                      )}
-                    </div>
+              {Object.entries(grouped).map(([dayLabel, dayEvents]) => (
+                <div key={dayLabel} className="modal-day-group">
+                  <div className="modal-day-header">
+                    <span className="modal-day-label">{dayLabel}</span>
+                  </div>
+                  {dayEvents.map((ev) => {
+                    const dates = Array.isArray(ev.dates) ? ev.dates : []
+                    const badgeClass = BADGE_COLORS[ev.badge] || 'badge-default'
+                    return (
+                      <Link
+                        to={`/eventi/${ev.id}`}
+                        className="modal-ev-card"
+                        key={ev.id}
+                        onClick={onClose}
+                      >
+                        {/* Image */}
+                        <div className="modal-ev-img">
+                          {ev.imageId ? (
+                            <img
+                              src={cloudinaryUrl(ev.imageId, 'w_280,c_limit,q_auto:best,f_auto')}
+                              alt={ev.title}
+                              loading="lazy"
+                            />
+                          ) : ev.imageUrl ? (
+                            <img
+                              src={cloudinaryFetch(ev.imageUrl, 'w_280,c_limit,q_auto:best,f_auto')}
+                              alt={ev.title}
+                              loading="lazy"
+                            />
+                          ) : (
+                            <div className={`modal-ev-img-placeholder modal-ph-${(ev.category || 'beach')}`} />
+                          )}
+                          {ev.badge && (
+                            <span className={`modal-ev-badge ${badgeClass}`}>{ev.badge}</span>
+                          )}
+                        </div>
 
-                    {/* Info */}
-                    <div className="modal-ev-info">
-                      <h4>{ev.title}</h4>
-                      {ev.description && (
-                        <p className="modal-ev-desc">{ev.description}</p>
-                      )}
-                      {ev.soldOutRisk && (
-                        <p className="modal-ev-risk-label">🚨 Quasi esaurito</p>
-                      )}
-                      {ev.drinkIncluso && (
-                        <span className="modal-ev-drink-badge">🍹 drink incluso</span>
-                      )}
+                        {/* Info */}
+                        <div className="modal-ev-info">
+                          <h4>{ev.title}</h4>
+                          {ev.description && (
+                            <p className="modal-ev-desc">{ev.description}</p>
+                          )}
+                          <div className="modal-ev-chips">
+                            {ev.soldOutRisk && (
+                              <span className="modal-ev-risk-label">🚨 Quasi esaurito</span>
+                            )}
+                            {ev.drinkIncluso && (
+                              <span className="modal-ev-drink-badge">🍹 drink incluso</span>
+                            )}
+                          </div>
 
-                      <div className="modal-ev-dates">
-                        {dates.length > 0 ? dates.map((d, i) => (
-                          <div key={i} className={`modal-ev-date-row${d.soldOut ? ' modal-ev-date-sold' : ''}`}>
-                            <span className="modal-ev-date-text">
-                              {d.soldOut ? '🚫' : '📅'} {d.date}{d.time ? ` · ${d.time}` : ''}
-                            </span>
-                            {d.soldOut && <span className="modal-date-sold-tag">SOLD OUT</span>}
+                          <div className="modal-ev-dates">
+                            {dates.length > 0 ? dates.map((d, i) => (
+                              <div key={i} className={`modal-ev-date-row${d.soldOut ? ' modal-ev-date-sold' : ''}`}>
+                                <span className="modal-ev-date-text">
+                                  {d.soldOut ? '🚫' : '📅'} {d.date}{d.time ? ` · ${d.time}` : ''}
+                                </span>
+                                {d.soldOut && <span className="modal-date-sold-tag">SOLD OUT</span>}
+                              </div>
+                            )) : (
+                              <div className="modal-ev-date-row">
+                                <span className="modal-ev-date-text">📅 Date da confermare</span>
+                              </div>
+                            )}
                           </div>
-                        )) : (
-                          <div className="modal-ev-date-row">
-                            <span className="modal-ev-date-text">📅 Date da confermare</span>
-                          </div>
-                        )}
-                      </div>
-                      <span className="modal-ev-goto">Vedi evento →</span>
-                    </div>
-                  </Link>
-                )
-              })}
+                          <span className="modal-ev-goto">Vedi evento →</span>
+                        </div>
+                      </Link>
+                    )
+                  })}
+                </div>
+              ))}
             </div>
           )}
         </div>

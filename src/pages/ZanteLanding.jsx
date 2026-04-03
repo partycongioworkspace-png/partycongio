@@ -130,6 +130,65 @@ function ScrollRowArrows({ children, className = '', autoScroll = false }) {
   )
 }
 
+/* ─── MarqueeRow: auto-scroll JS + pause on touch/hover ── */
+function MarqueeRow({ children }) {
+  const ref = useRef(null)
+  const paused = useRef(false)
+  const resumeTimer = useRef(null)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    let rafId
+    const SPEED = 0.7 // px per frame
+
+    function step() {
+      if (!paused.current && el.scrollWidth > el.clientWidth) {
+        el.scrollLeft += SPEED
+        // loop: quando arrivi a metà (carte duplicate) torna all'inizio
+        if (el.scrollLeft >= el.scrollWidth / 2) {
+          el.scrollLeft = 0
+        }
+      }
+      rafId = requestAnimationFrame(step)
+    }
+    rafId = requestAnimationFrame(step)
+
+    const pause = () => {
+      paused.current = true
+      clearTimeout(resumeTimer.current)
+    }
+    const resume = () => {
+      clearTimeout(resumeTimer.current)
+      resumeTimer.current = setTimeout(() => { paused.current = false }, 2200)
+    }
+
+    el.addEventListener('touchstart', pause, { passive: true })
+    el.addEventListener('touchend',   resume, { passive: true })
+    el.addEventListener('mouseenter', pause)
+    el.addEventListener('mouseleave', resume)
+
+    return () => {
+      cancelAnimationFrame(rafId)
+      clearTimeout(resumeTimer.current)
+      el.removeEventListener('touchstart', pause)
+      el.removeEventListener('touchend',   resume)
+      el.removeEventListener('mouseenter', pause)
+      el.removeEventListener('mouseleave', resume)
+    }
+  }, [])
+
+  return (
+    <div className="marquee-js-wrap">
+      <div className="marquee-js-inner" ref={ref}>
+        <div className="marquee-js-track">
+          {children}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 /* ─── LifePassWristband ──────────────────────── */
 function LifePassWristband() {
   const cardRef   = useRef(null)
@@ -179,12 +238,12 @@ function LifePassWristband() {
 /* ─── EventCard ──────────────────────────────── */
 const MotionLink = motion(Link)
 
-function EventCard({ ev }) {
+function EventCard({ ev, className = '' }) {
   const primaryDate = Array.isArray(ev.dates) ? ev.dates[0] : null
   return (
     <MotionLink
       to={`/eventi/${ev.id}`}
-      className="ev-card"
+      className={`ev-card${className ? ` ${className}` : ''}`}
       whileHover={{ y: -8, scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       transition={{ type: 'spring', stiffness: 340, damping: 22 }}
@@ -407,66 +466,6 @@ function ZanteLanding() {
         </motion.div>
       </section>
 
-      {/* ══ VIDEO SHOWCASE ══════════════════════════ */}
-      <Section className="sec-video-showcase">
-        <div className="vs-label-row">
-          <p className="label">Zante in diretta</p>
-          <h2 className="vs-title">Senti l'atmosfera</h2>
-        </div>
-        <div className="vs-grid">
-          {/* foto sinistra */}
-          <motion.div
-            className="vs-photo vs-photo-tl"
-            initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }} transition={{ duration: 0.55, delay: 0.1 }}
-          >
-            <img src="https://images.unsplash.com/photo-1574391884720-bbc3740c59d1?w=600&q=80" alt="night party" loading="lazy" />
-          </motion.div>
-          <motion.div
-            className="vs-photo vs-photo-bl"
-            initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }} transition={{ duration: 0.55, delay: 0.2 }}
-          >
-            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" alt="beach" loading="lazy" />
-          </motion.div>
-
-          {/* video centrale */}
-          <motion.div
-            className="vs-video-wrap"
-            initial={{ opacity: 0, scale: 0.93 }} whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.05 }}
-          >
-            <video
-              className="vs-video"
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="auto"
-            >
-              <source src="/hero.mp4" type="video/mp4" />
-            </video>
-            <div className="vs-video-glow" />
-          </motion.div>
-
-          {/* foto destra */}
-          <motion.div
-            className="vs-photo vs-photo-tr"
-            initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }} transition={{ duration: 0.55, delay: 0.1 }}
-          >
-            <img src="https://images.unsplash.com/photo-1575429198097-0414ec08e8cd?w=600&q=80" alt="pool party" loading="lazy" />
-          </motion.div>
-          <motion.div
-            className="vs-photo vs-photo-br"
-            initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }} transition={{ duration: 0.55, delay: 0.2 }}
-          >
-            <img src="https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=600&q=80" alt="boat party" loading="lazy" />
-          </motion.div>
-        </div>
-      </Section>
-
       {/* ══ CATEGORIE ════════════════════════════════ */}
       <Section className="sec-categories">
         <div className="cat-header">
@@ -680,13 +679,14 @@ function ZanteLanding() {
                 Vedi tutti →
               </motion.button>
             </div>
-            <div className="hype-marquee-wrap">
-              <div className="hype-marquee-track">
-                {[...badgeEvents, ...badgeEvents].map((ev, i) => (
-                  <EventCard key={`${ev.id}-${i}`} ev={ev} />
-                ))}
-              </div>
-            </div>
+            <MarqueeRow>
+              {[...badgeEvents, ...badgeEvents].map((ev, i) => (
+                <EventCard
+                  key={`${ev.id}-${i}`}
+                  ev={ev}
+                />
+              ))}
+            </MarqueeRow>
           </Section>
         )
       })}

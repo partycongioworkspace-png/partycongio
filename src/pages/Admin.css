@@ -498,6 +498,11 @@
   color: var(--adm-fuchsia);
   border-color: rgba(217,70,239,0.3);
 }
+.adm-badge-drink {
+  background: rgba(6,182,212,0.12);
+  color: #22d3ee;
+  border-color: rgba(6,182,212,0.3);
+}
 
 .adm-ev-body h3 {
   font-size: 1.05rem;

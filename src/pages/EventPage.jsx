@@ -26,10 +26,12 @@ const BADGE_COLORS = {
 }
 
 const CAT_GRADIENT = {
-  beach: 'linear-gradient(135deg, #d946ef, #8b5cf6)',
-  boat:  'linear-gradient(135deg, #0ea5e9, #0369a1)',
-  night: 'linear-gradient(135deg, #1e0d36, #8b5cf6)',
-  pool:  'linear-gradient(135deg, #06b6d4, #0891b2)',
+  beach:         'linear-gradient(135deg, #d946ef, #8b5cf6)',
+  boat:          'linear-gradient(135deg, #0ea5e9, #0369a1)',
+  night:         'linear-gradient(135deg, #1e0d36, #8b5cf6)',
+  pool:          'linear-gradient(135deg, #06b6d4, #0891b2)',
+  trend:         'linear-gradient(135deg, #d946ef, #ec4899)',
+  'special-guest': 'linear-gradient(135deg, #f59e0b, #d97706)',
 }
 
 function EventPage() {
@@ -162,7 +164,7 @@ function EventPage() {
             <p className="ep-category">
               Categoria:&nbsp;
               <span>
-                {{beach:'🏖 Beach Party',boat:'⛵ Boat Party',night:'🌙 Night Club',pool:'💦 Pool Party'}[event.category] || event.category}
+                {{beach:'🏖 Beach Party',boat:'⛵ Boat Party',night:'🌙 Night Club',pool:'💦 Pool Party',trend:'💖 Trend','special-guest':'🎤 Special Guest'}[event.category] || event.category}
               </span>
             </p>
           )}
